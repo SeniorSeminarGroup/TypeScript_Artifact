@@ -33,6 +33,7 @@ startStop?.addEventListener("click", clockStartStop)
 
 let globalIntervalId: number = -1
 let saveTime: TimeInterval = {hours: 0, minutes: 0, seconds: 0}
+let workTime:boolean = true
 
 const tasks: Task[] = loadTasks()
 tasks.forEach(addListItem)
@@ -101,14 +102,18 @@ function clockStartStop() {
   const workInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 5}
   const breakInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 10}
 
-  const curWorkInterval = workInterval
-  const curBreakInterval = breakInterval
+  let currentInterval;
+  if(workTime){
+    currentInterval = workInterval
+  }else{
+    currentInterval = breakInterval
+  }
 
-  const intervalID = setInterval(() => clockCountDown(curWorkInterval, intervalID), 1000);
+  const intervalID = setInterval(() => clockCountDown(currentInterval, intervalID), 1000);
   globalIntervalId = intervalID
 
 
-  clockCountDown(curWorkInterval, intervalID);
+  clockCountDown(currentInterval, intervalID);
   }
 }
 
@@ -117,7 +122,6 @@ function clockCountDown(interval: TimeInterval, intervalID: number) {
   clock!.innerHTML = formatTime(interval)
   saveTime = interval
   
-
   if(interval.seconds > 0) {
     interval.seconds = interval.seconds - 1
   } else if (interval.minutes > 0) {
@@ -127,9 +131,22 @@ function clockCountDown(interval: TimeInterval, intervalID: number) {
     interval.hours = interval.hours - 1
     interval.minutes = 59
     interval.seconds = 59
-  } else {
+  } else { // current time interval finished 
+    
+    // change current time to all 0s
     clock!.innerHTML = formatTime(interval)
+    // end the timer interval
     clearInterval(intervalID);
+    // set global to -1 to signify no current interval running
+    globalIntervalId = -1
+    // switch time
+    if(workTime){
+      workTime = false
+    }else{
+      workTime = true
+    }
+    // start next time interval
+    clockStartStop()
   }
 }
 
