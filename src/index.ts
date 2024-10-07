@@ -31,6 +31,9 @@ const input = document.querySelector<HTMLInputElement>("#new-task-title")
 const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button")
 startStop?.addEventListener("click", clockStartStop)
 
+let globalIntervalId: number = -1
+let saveTime: TimeInterval = {hours: 0, minutes: 0, seconds: 0}
+
 const tasks: Task[] = loadTasks()
 tasks.forEach(addListItem)
 
@@ -85,24 +88,35 @@ function clockStartStop() {
   // ex:  workTime = <TimeInterval> 
   //      breakTime = <TimeInterval>
 
+  if(globalIntervalId != -1){
+    clearInterval(globalIntervalId);
+    globalIntervalId = -1
+  }
+  else if (saveTime.seconds>0 || saveTime.minutes>0 ||saveTime.hours>0 || saveTime == null) {
+    const intervalID = setInterval(() => clockCountDown(saveTime, intervalID), 1000);
+    globalIntervalId = intervalID
+    clockCountDown(saveTime, intervalID);
+  }
+  else{
   const workInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 5}
   const breakInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 10}
 
   const curWorkInterval = workInterval
   const curBreakInterval = breakInterval
 
-  const intervalID = setInterval(clockCountDown, 1000)
+  const intervalID = setInterval(() => clockCountDown(curWorkInterval, intervalID), 1000);
+  globalIntervalId = intervalID
+
 
   clockCountDown(curWorkInterval, intervalID);
-  
-  
+  }
 }
 
 function clockCountDown(interval: TimeInterval, intervalID: number) {
   const clock = document.querySelector<HTMLSpanElement>('#clock-time')
-  console.log("call formatTime")
   clock!.innerHTML = formatTime(interval)
-  console.log("called formatTime")
+  saveTime = interval
+  
 
   if(interval.seconds > 0) {
     interval.seconds = interval.seconds - 1
