@@ -55,15 +55,12 @@ class Timer {
   }
 
   switchInterval() {
-      console.log("switching")
       if (this.isWorkTime) {
           this.isWorkTime = false
           this.currentInterval = { ...this.breakTime }
-          console.log("breaktime")
       } else {
           this.isWorkTime = true
           this.currentInterval = { ...this.workTime }
-          console.log("worktime")
       }
 
       this.start()
