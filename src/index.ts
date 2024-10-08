@@ -67,7 +67,10 @@ form?.addEventListener("submit", e => {
 })
 
 const timeSet = document.querySelector<HTMLButtonElement>("#set-break")
-timeSet?.addEventListener("click", setTimeLength)
+//timeSet?.addEventListener("click", e =>setTimeLength)
+timeSet?.addEventListener('click', () => {
+  setTimeLength()
+});
 
 function addListItem(task: Task): boolean {
   const item = document.createElement("li")
@@ -136,12 +139,17 @@ function clockStartStop() {
     const workInterval: TimeInterval = workTimeLength
     const breakInterval: TimeInterval = breakTimeLength
 
+    //this is just so we can change the background color in different intervals
+    const body = document.body;
     //set 
     let currentInterval; 
     if(workTime){
       currentInterval = workInterval
+      body.style.backgroundColor = '#42f57b'
     }else{
+      console.log("gray")
       currentInterval = breakInterval
+      body.style.backgroundColor = 'lightblue'
     }
 
     //creates an interval that called clockCountDown every second.
@@ -228,12 +236,15 @@ function setTimeLength() {
   const work_minutes: number = Math.floor(work_time_minutes % 60)
   const work_seconds: number = Math.floor((work_time_minutes*60) % 60)
 
-  const break_hours: number = Math.floor(work_time_minutes / 60)
-  const break_minutes: number = Math.floor(work_time_minutes % 60)
-  const break_seconds: number = Math.floor((work_time_minutes*60) % 60)
+  const break_hours: number = Math.floor(break_time_minutes / 60)
+  const break_minutes: number = Math.floor(break_time_minutes % 60)
+  const break_seconds: number = Math.floor((break_time_minutes*60) % 60)
   
   workTimeLength = {hours: work_hours, minutes: work_minutes, seconds: work_seconds}
-  breakTimeLength = {hours: break_hours, minutes: work_minutes, seconds: work_seconds}
+  breakTimeLength = {hours: break_hours, minutes: break_minutes, seconds: break_seconds}
+
+  console.log("workTimeLength: "+workTimeLength.seconds)
+  console.log("breakTimeLength: "+breakTimeLength.seconds)
 
   clock!.innerHTML = formatTime(workTimeLength)
 }
