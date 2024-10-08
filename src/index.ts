@@ -11,6 +11,7 @@ Link: https://www.youtube.com/watch?v=jBmrduvKl5w
 
 import { v4 as uuidV4 } from "uuid"
 
+/* Task type to specify a task */
 type Task = {
   id: string,
   title: string,
@@ -18,21 +19,27 @@ type Task = {
   createdAt: Date,
 }
 
+/* Timeinterval type to specify a length of time */
 type TimeInterval = {
   hours: number,
   minutes: number,
   seconds: number
 }
 
+/* task logic */
 const list = document.querySelector<HTMLUListElement>("#list")
 const form = document.querySelector("#new-task-form") as HTMLFormElement | null
 const input = document.querySelector<HTMLInputElement>("#new-task-title")
 
+/* timer button tags */
 const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button")
 startStop?.addEventListener("click", clockStartStop)
 
+/* place to store the Interval timer if paused */
 let globalIntervalId: number = -1
+/* place to save the time if user pauses the timer */
 let saveTime: TimeInterval = {hours: 0, minutes: 0, seconds: 0}
+/* track if user is currently in work or break mode */
 let workTime:boolean = true
 
 const tasks: Task[] = loadTasks()
@@ -83,40 +90,70 @@ function loadTasks(): Task[] {
   return JSON.parse(taskJSON)
 }
 
+/* 
+Starts and stops the timer. 
+
+If globalIntervalId is populated:
+  then a timers is currently running
+  -clear the currently counting timer
+If saveTime Interval is populated with a time greater than 00:00:00:
+  then a timer is in the pause state,
+  -create a new setInterval with the given saveTime
+  -save the interval ID to globalIntervalID
+Else No timer was previously running:
+  -set the current interval based on the workTime variable
+  -create a new setInterval that counts down every second calling clockCountDown each second
+*/
 function clockStartStop() {
   
   // this would be where we get the time interval via some function
   // ex:  workTime = <TimeInterval> 
   //      breakTime = <TimeInterval>
 
-  if(globalIntervalId != -1){
+  if(globalIntervalId != -1){ // pause the timer
     clearInterval(globalIntervalId);
     globalIntervalId = -1
+
+    startStop!.innerHTML = "Start"
   }
-  else if (saveTime.seconds>0 || saveTime.minutes>0 ||saveTime.hours>0 || saveTime == null) {
-    const intervalID = setInterval(() => clockCountDown(saveTime, intervalID), 1000);
+  else if (saveTime.seconds>0 || saveTime.minutes>0 || saveTime.hours>0 || saveTime == null) { //un-pause the timer
+    const intervalID = setInterval(() => clockCountDown(saveTime, intervalID), 1000); // 
+    globalIntervalId = intervalID // save the current interval ID
+    clockCountDown(saveTime, intervalID); //
+
+    startStop!.innerHTML = "Pause"
+  }
+  else{ // if nothing has been saved in global variables, then this creates a brand new timer and variables
+
+    //placeholder intervals, in the future, the workInterval and breakInterval will be passed into the clockStartStop function.
+    //in this case, we can just move this else case out of the clockStartStop function and overload the function with a workInterval and breakInterval functions.
+    const workInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 5}
+    const breakInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 10}
+
+    //set 
+    let currentInterval; 
+    if(workTime){
+      currentInterval = workInterval
+    }else{
+      currentInterval = breakInterval
+    }
+
+    //creates an interval that called clockCountDown every second.
+    const intervalID = setInterval(() => clockCountDown(currentInterval, intervalID), 1000);
     globalIntervalId = intervalID
-    clockCountDown(saveTime, intervalID);
-  }
-  else{
-  const workInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 5}
-  const breakInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 10}
 
-  let currentInterval;
-  if(workTime){
-    currentInterval = workInterval
-  }else{
-    currentInterval = breakInterval
-  }
+    // this call seems useless, but without it the timer wont immediatly update. Keeping it in to help the user better understand that the timer has began
+    clockCountDown(currentInterval, intervalID);
 
-  const intervalID = setInterval(() => clockCountDown(currentInterval, intervalID), 1000);
-  globalIntervalId = intervalID
-
-
-  clockCountDown(currentInterval, intervalID);
+    startStop!.innerHTML = "Pause"
   }
 }
 
+/* 
+Functionally this is a countDown timer.
+It needs a timer interval which is a TimeInterval type to countdown from.
+MUST INCLUDE an intervalID which points back to the setInterval that is calling it
+*/
 function clockCountDown(interval: TimeInterval, intervalID: number) {
   const clock = document.querySelector<HTMLSpanElement>('#clock-time')
   clock!.innerHTML = formatTime(interval)
@@ -139,7 +176,7 @@ function clockCountDown(interval: TimeInterval, intervalID: number) {
     clearInterval(intervalID);
     // set global to -1 to signify no current interval running
     globalIntervalId = -1
-    // switch time
+    // switch time interval type
     if(workTime){
       workTime = false
     }else{
@@ -151,9 +188,12 @@ function clockCountDown(interval: TimeInterval, intervalID: number) {
 }
 
 
+/* 
+Formats time into a string, accepts the TimeInterval type. 
+Please use this when you want to display the time
+*/
 function formatTime(time: TimeInterval): string
 {
-  console.log(time)
   const hourString: string = (time.hours > 9)? String(time.hours): '0'+time.hours
   const minutesString: string = (time.minutes > 9)? String(time.minutes): '0'+time.minutes
   const secondsString: string = (time.seconds > 9)? String(time.seconds): '0'+time.seconds
