@@ -32,6 +32,7 @@ const form = document.querySelector("#new-task-form") as HTMLFormElement | null
 const input = document.querySelector<HTMLInputElement>("#new-task-title")
 
 /* timer button tags */
+const clock = document.querySelector<HTMLSpanElement>('#clock-time')
 const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button")
 startStop?.addEventListener("click", clockStartStop)
 
@@ -41,6 +42,9 @@ let globalIntervalId: number = -1
 let saveTime: TimeInterval = {hours: 0, minutes: 0, seconds: 0}
 /* track if user is currently in work or break mode */
 let workTime:boolean = true
+
+let workTimeLength: TimeInterval = {hours: 0, minutes: 25, seconds: 0}
+let breakTimeLength: TimeInterval = {hours: 0, minutes: 5, seconds: 0}
 
 const tasks: Task[] = loadTasks()
 tasks.forEach(addListItem)
@@ -61,6 +65,9 @@ form?.addEventListener("submit", e => {
   addListItem(newTask)
   input.value = ""
 })
+
+const timeSet = document.querySelector<HTMLButtonElement>("#set-break")
+timeSet?.addEventListener("click", setTimeLength)
 
 function addListItem(task: Task): boolean {
   const item = document.createElement("li")
@@ -105,7 +112,6 @@ Else No timer was previously running:
   -create a new setInterval that counts down every second calling clockCountDown each second
 */
 function clockStartStop() {
-  
   // this would be where we get the time interval via some function
   // ex:  workTime = <TimeInterval> 
   //      breakTime = <TimeInterval>
@@ -127,8 +133,8 @@ function clockStartStop() {
 
     //placeholder intervals, in the future, the workInterval and breakInterval will be passed into the clockStartStop function.
     //in this case, we can just move this else case out of the clockStartStop function and overload the function with a workInterval and breakInterval functions.
-    const workInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 5}
-    const breakInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 10}
+    const workInterval: TimeInterval = workTimeLength
+    const breakInterval: TimeInterval = breakTimeLength
 
     //set 
     let currentInterval; 
@@ -155,7 +161,6 @@ It needs a timer interval which is a TimeInterval type to countdown from.
 MUST INCLUDE an intervalID which points back to the setInterval that is calling it
 */
 function clockCountDown(interval: TimeInterval, intervalID: number) {
-  const clock = document.querySelector<HTMLSpanElement>('#clock-time')
   clock!.innerHTML = formatTime(interval)
   saveTime = interval
   
@@ -199,4 +204,36 @@ function formatTime(time: TimeInterval): string
   const secondsString: string = (time.seconds > 9)? String(time.seconds): '0'+time.seconds
 
   return hourString + ":" + minutesString + ":" + secondsString
+}
+
+/**
+ * 
+ */
+function setTimeLength() {
+  const work_time_minutes = Number(document.querySelector<HTMLInputElement>("#work-length")?.value)
+  const break_time_minutes = Number(document.querySelector<HTMLInputElement>("#break-length")?.value)
+
+  if (work_time_minutes==null || work_time_minutes==0){
+    const work_hours: number = 0
+    const work_minutes: number = 15
+    const work_seconds: number = 0
+  }
+  if (break_time_minutes==null || break_time_minutes==0){
+    const break_hours: number = 0
+    const break_minutes: number = 7
+    const break_seconds: number = 0
+  }
+
+  const work_hours: number = Math.floor(work_time_minutes / 60)
+  const work_minutes: number = Math.floor(work_time_minutes % 60)
+  const work_seconds: number = Math.floor((work_time_minutes*60) % 60)
+
+  const break_hours: number = Math.floor(work_time_minutes / 60)
+  const break_minutes: number = Math.floor(work_time_minutes % 60)
+  const break_seconds: number = Math.floor((work_time_minutes*60) % 60)
+  
+  workTimeLength = {hours: work_hours, minutes: work_minutes, seconds: work_seconds}
+  breakTimeLength = {hours: break_hours, minutes: work_minutes, seconds: work_seconds}
+
+  clock!.innerHTML = formatTime(workTimeLength)
 }
