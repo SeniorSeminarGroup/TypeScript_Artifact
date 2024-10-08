@@ -18,7 +18,7 @@ class Timer {
         this.breakTime = breakTime;
     }
 
-    start() {
+    start(){
         this.intervalID = setInterval(() => this.clockCountDown(), 1000); // 
         this.clockCountDown();
     }
@@ -26,6 +26,24 @@ class Timer {
     stop() {
         clearInterval(this.intervalID);
         this.intervalID = -1
+    }
+
+    reset() {
+
+    }
+
+    switchInterval() {
+        if (this.isWorkTime) {
+            this.isWorkTime = false
+            this.currentInterval = this.breakTime
+        } else {
+            this.isWorkTime = true
+            this.currentInterval = this.workTime
+        }
+    }
+
+    getTime(): TimeInterval {
+        return this.currentInterval
     }
 
     /* 
@@ -45,22 +63,12 @@ class Timer {
             this.currentInterval.minutes = 59
             this.currentInterval.seconds = 59
         } else { // current time interval finished 
-
-            // change current time to all 0s
-            this.clock!.innerHTML = this.formatTime(this.currentInterval)
             // end the timer interval
             this.stop()
             // switch time interval type
-            if (this.isWorkTime) {
-                this.isWorkTime = false
-            } else {
-                this.isWorkTime = true
-            }
-            // start next time interval
-            clockStartStop()
+            this.switchInterval()
         }
     }
-
 
     /* 
     Formats time into a string, accepts the TimeInterval type. 

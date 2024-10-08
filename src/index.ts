@@ -26,14 +26,91 @@ type TimeInterval = {
   seconds: number
 }
 
+class Timer {
+  intervalID: number = -1;
+  workTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
+  breakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
+  isWorkTime: boolean = true;
+  currentInterval: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
+  clock = document.querySelector<HTMLSpanElement>('#clock-time')
+
+  constructor(workTime: TimeInterval, breakTime: TimeInterval) {
+      this.workTime = workTime;
+      this.breakTime = breakTime;
+      this.currentInterval = { ...workTime};
+  }
+
+  start() {
+    this.intervalID = setInterval(() => this.clockCountDown(), 1000);
+    this.clockCountDown();
+  }
+
+  stop() {
+      clearInterval(this.intervalID);
+      this.intervalID = -1
+  }
+
+  reset() {
+
+  }
+
+  switchInterval() {
+      console.log("switching")
+      if (this.isWorkTime) {
+          this.isWorkTime = false
+          this.currentInterval = { ...this.breakTime }
+          console.log("breaktime")
+      } else {
+          this.isWorkTime = true
+          this.currentInterval = { ...this.workTime }
+          console.log("worktime")
+      }
+
+      this.start()
+  }
+
+  getTime(): TimeInterval {
+    return this.currentInterval
+  }
+
+  /* 
+  Functionally this is a countDown timer.
+  It needs a timer interval which is a TimeInterval type to countdown from.
+  MUST INCLUDE an intervalID which points back to the setInterval that is calling it
+  */
+  clockCountDown() {
+      this.clock!.innerHTML = formatTime(this.currentInterval)
+      if (this.currentInterval.seconds > 0) {
+          this.currentInterval.seconds = this.currentInterval.seconds - 1
+      } else if (this.currentInterval.minutes > 0) {
+          this.currentInterval.minutes = this.currentInterval.minutes - 1
+          this.currentInterval.seconds = 59
+      } else if (this.currentInterval.hours > 0) {
+          this.currentInterval.hours = this.currentInterval.hours - 1
+          this.currentInterval.minutes = 59
+          this.currentInterval.seconds = 59
+      } else { // current time interval finished 
+          // end the timer interval
+          this.stop()
+          // switch time interval type
+          this.switchInterval()
+      }
+  }
+}
+
 /* task logic */
 const list = document.querySelector<HTMLUListElement>("#list")
 const form = document.querySelector("#new-task-form") as HTMLFormElement | null
 const input = document.querySelector<HTMLInputElement>("#new-task-title")
 
-/* timer button tags */
+//new timer (created on page refresh)
+const newWorkTime: TimeInterval = { hours: 0, minutes: 0, seconds: 10 };
+const newBreakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 5 };
+const newTimer = new Timer(newWorkTime, newBreakTime)
+
+/* timer button logic and event listener */
 const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button")
-startStop?.addEventListener("click", clockStartStop)
+startStop?.addEventListener("click", f => newTimer.start())
 
 /* place to store the Interval timer if paused */
 let globalIntervalId: number = -1
@@ -89,104 +166,6 @@ function loadTasks(): Task[] {
 
   return JSON.parse(taskJSON)
 }
-
-/* 
-Starts and stops the timer. 
-
-If globalIntervalId is populated:
-  then a timers is currently running
-  -clear the currently counting timer
-If saveTime Interval is populated with a time greater than 00:00:00:
-  then a timer is in the pause state,
-  -create a new setInterval with the given saveTime
-  -save the interval ID to globalIntervalID
-Else No timer was previously running:
-  -set the current interval based on the workTime variable
-  -create a new setInterval that counts down every second calling clockCountDown each second
-*/
-function clockStartStop() {
-  
-  // this would be where we get the time interval via some function
-  // ex:  workTime = <TimeInterval> 
-  //      breakTime = <TimeInterval>
-
-  if(globalIntervalId != -1){ // pause the timer
-    clearInterval(globalIntervalId);
-    globalIntervalId = -1
-
-    startStop!.innerHTML = "Start"
-  }
-  else if (saveTime.seconds>0 || saveTime.minutes>0 || saveTime.hours>0 || saveTime == null) { //un-pause the timer
-    const intervalID = setInterval(() => clockCountDown(saveTime, intervalID), 1000); // 
-    globalIntervalId = intervalID // save the current interval ID
-    clockCountDown(saveTime, intervalID); //
-
-    startStop!.innerHTML = "Pause"
-  }
-  else{ // if nothing has been saved in global variables, then this creates a brand new timer and variables
-
-    //placeholder intervals, in the future, the workInterval and breakInterval will be passed into the clockStartStop function.
-    //in this case, we can just move this else case out of the clockStartStop function and overload the function with a workInterval and breakInterval functions.
-    const workInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 5}
-    const breakInterval: TimeInterval = {hours: 0, minutes: 0, seconds: 10}
-
-    //set 
-    let currentInterval; 
-    if(workTime){
-      currentInterval = workInterval
-    }else{
-      currentInterval = breakInterval
-    }
-
-    //creates an interval that called clockCountDown every second.
-    const intervalID = setInterval(() => clockCountDown(currentInterval, intervalID), 1000);
-    globalIntervalId = intervalID
-
-    // this call seems useless, but without it the timer wont immediatly update. Keeping it in to help the user better understand that the timer has began
-    clockCountDown(currentInterval, intervalID);
-
-    startStop!.innerHTML = "Pause"
-  }
-}
-
-/* 
-Functionally this is a countDown timer.
-It needs a timer interval which is a TimeInterval type to countdown from.
-MUST INCLUDE an intervalID which points back to the setInterval that is calling it
-*/
-function clockCountDown(interval: TimeInterval, intervalID: number) {
-  const clock = document.querySelector<HTMLSpanElement>('#clock-time')
-  clock!.innerHTML = formatTime(interval)
-  saveTime = interval
-  
-  if(interval.seconds > 0) {
-    interval.seconds = interval.seconds - 1
-  } else if (interval.minutes > 0) {
-    interval.minutes = interval.minutes - 1
-    interval.seconds = 59
-  } else if (interval.hours > 0) {
-    interval.hours = interval.hours - 1
-    interval.minutes = 59
-    interval.seconds = 59
-  } else { // current time interval finished 
-    
-    // change current time to all 0s
-    clock!.innerHTML = formatTime(interval)
-    // end the timer interval
-    clearInterval(intervalID);
-    // set global to -1 to signify no current interval running
-    globalIntervalId = -1
-    // switch time interval type
-    if(workTime){
-      workTime = false
-    }else{
-      workTime = true
-    }
-    // start next time interval
-    clockStartStop()
-  }
-}
-
 
 /* 
 Formats time into a string, accepts the TimeInterval type. 
