@@ -31,27 +31,27 @@ class Timer {
   workTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
   breakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
   isWorkTime: boolean = true;
+  paused: boolean = false;
   currentInterval: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
-  clock = document.querySelector<HTMLSpanElement>('#clock-time')
+  clock: HTMLSpanElement | null = null;
 
-  constructor(workTime: TimeInterval, breakTime: TimeInterval) {
+  constructor(workTime: TimeInterval, breakTime: TimeInterval, clock: HTMLSpanElement) {
       this.workTime = workTime;
       this.breakTime = breakTime;
       this.currentInterval = { ...workTime};
+      this.clock = clock;
   }
 
   start() {
     this.intervalID = setInterval(() => this.clockCountDown(), 1000);
+    this.paused = true;
     this.clockCountDown();
   }
 
   stop() {
       clearInterval(this.intervalID);
+      this.paused = false;
       this.intervalID = -1
-  }
-
-  reset() {
-
   }
 
   switchInterval() {
@@ -64,6 +64,10 @@ class Timer {
       }
 
       this.start()
+  }
+
+  reset() {
+    this.currentInterval = this.workTime
   }
 
   getTime(): TimeInterval {
@@ -101,13 +105,24 @@ const form = document.querySelector("#new-task-form") as HTMLFormElement | null
 const input = document.querySelector<HTMLInputElement>("#new-task-title")
 
 //new timer (created on page refresh)
+const clock = document.querySelector<HTMLSpanElement>('#clock-time')
 const newWorkTime: TimeInterval = { hours: 0, minutes: 0, seconds: 10 };
 const newBreakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 5 };
-const newTimer = new Timer(newWorkTime, newBreakTime)
+const newTimer = new Timer(newWorkTime, newBreakTime, clock!)
 
 /* timer button logic and event listener */
 const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button")
-startStop?.addEventListener("click", f => newTimer.start())
+startStop?.addEventListener("click", f => {
+
+  if(newTimer.paused) {
+    newTimer.stop()
+    startStop.innerHTML = "Start"
+  } else {
+    newTimer.start()
+    startStop.innerHTML = "Pause"
+  }
+  
+})
 
 /* place to store the Interval timer if paused */
 let globalIntervalId: number = -1
