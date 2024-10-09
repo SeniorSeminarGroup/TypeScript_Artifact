@@ -28,10 +28,6 @@ let saveTime: TimeInterval = {hours: 0, minutes: 0, seconds: 0}
 /* track if user is currently in work or break mode */
 let workTime:boolean = true
 
-/**holds the current work and break interval lengths */
-// let workTimeLength: TimeInterval = {hours: 0, minutes: 25, seconds: 0}
-// let breakTimeLength: TimeInterval = {hours: 0, minutes: 5, seconds: 0}
-
 /* task logic */
 const list = document.querySelector<HTMLUListElement>("#list")
 const form = document.querySelector("#new-task-form") as HTMLFormElement | null
@@ -39,9 +35,10 @@ const input = document.querySelector<HTMLInputElement>("#new-task-title")
 
 //new timer (created on page refresh)
 const clock = document.querySelector<HTMLSpanElement>('#clock-time')
-const newWorkTime: TimeInterval = { hours: 0, minutes: 0, seconds: 10 };
-const newBreakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 5 };
+const newWorkTime: TimeInterval = returnWorkInterval();
+const newBreakTime: TimeInterval = { hours: 0, minutes: 1, seconds: 0 };
 const newTimer = new Timer(newWorkTime, newBreakTime, clock!);
+setTimeLength()
 
 /* timer button logic and event listener */
 const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button")
@@ -77,7 +74,6 @@ form?.addEventListener("submit", e => {
 })
 
 const timeSet = document.querySelector<HTMLButtonElement>("#set-break")
-//timeSet?.addEventListener("click", e =>setTimeLength)
 timeSet?.addEventListener('click', () => {
   setTimeLength()
 });
@@ -114,35 +110,41 @@ function loadTasks(): Task[] {
  * Changes the workTimeLength and breakTimeLength variables to the values inputed by the user
  */
 function setTimeLength() {
-  //number of minutes that the intervals should be set for
-  const work_time_minutes = Number(document.querySelector<HTMLInputElement>("#work-length")?.value)
   const break_time_minutes = Number(document.querySelector<HTMLInputElement>("#break-length")?.value)
 
-  //default values
-  if (work_time_minutes==null || work_time_minutes==0){
-    const work_hours: number = 0
-    const work_minutes: number = 25
-    const work_seconds: number = 0
+  let break_hours: number = 0
+  let break_minutes: number = 0
+  let break_seconds: number = 5
+  
+  if(break_time_minutes > 0){
+    break_hours = Math.floor(break_time_minutes / 60)
+    break_minutes = Math.floor(break_time_minutes % 60)
+    break_seconds = Math.floor((break_time_minutes*60) % 60)
   }
-  if (break_time_minutes==null || break_time_minutes==0){
-    const break_hours: number = 0
-    const break_minutes: number = 5
-    const break_seconds: number = 0
-  }
-
-  //Calculate the hours, minutes, and seconds based off of the total minutes
-  const work_hours: number = Math.floor(work_time_minutes / 60)
-  const work_minutes: number = Math.floor(work_time_minutes % 60)
-  const work_seconds: number = Math.floor((work_time_minutes*60) % 60)
-
-  const break_hours: number = Math.floor(break_time_minutes / 60)
-  const break_minutes: number = Math.floor(break_time_minutes % 60)
-  const break_seconds: number = Math.floor((break_time_minutes*60) % 60)
   
   //set the global variables
-  const workTimeLength = {hours: work_hours, minutes: work_minutes, seconds: work_seconds}
+  const workTimeLength = returnWorkInterval()
   const breakTimeLength = {hours: break_hours, minutes: break_minutes, seconds: break_seconds}
   newTimer.setWorkInterval(workTimeLength)
   newTimer.setBreakInterval(breakTimeLength)
   clock!.innerHTML = formatTime(workTimeLength)
+}
+
+function returnWorkInterval(): TimeInterval {
+
+  const work_time_minutes = Number(document.querySelector<HTMLInputElement>("#work-length")?.value)
+
+  
+  let work_hours: number = 0
+  let work_minutes: number = 0
+  let work_seconds: number = 10
+  if (work_time_minutes > 0) {//Calculate the hours, minutes, and seconds based off of the total minutes
+    work_hours = Math.floor(work_time_minutes / 60)
+    work_minutes = Math.floor(work_time_minutes % 60)
+    work_seconds = Math.floor((work_time_minutes*60) % 60)
+  }
+
+  const workTimeLength = {hours: work_hours, minutes: work_minutes, seconds: work_seconds}
+  console.log("return work interval: workTimeLength = "+work_seconds)
+  return workTimeLength
 }

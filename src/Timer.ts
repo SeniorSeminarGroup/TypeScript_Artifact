@@ -6,16 +6,20 @@ export class Timer {
     intervalID: number = -1;
     workTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
     breakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
+    workColor: string = '#42f57b';
+    breakColor:  string = 'lightblue';
     isWorkTime: boolean = true;
     paused: boolean = false;
     currentInterval: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
     clock: HTMLSpanElement | null = null;
+    body: HTMLElement = document.body;
   
-    constructor(workTime: TimeInterval, breakTime: TimeInterval, clock: HTMLSpanElement) {
-        this.workTime = workTime;
-        this.breakTime = breakTime;
+    constructor(workTime: TimeInterval, breakTime: TimeInterval, clock: HTMLSpanElement, workColor?: string, breakcolor?: string) {
+        this.workTime = workTime ?? '#42f57b';
+        this.breakTime = breakTime ?? 'lightblue';
         this.currentInterval = { ...workTime};
         this.clock = clock;
+        this.body.style.backgroundColor = this.workColor;
     }
   
     start() {
@@ -34,11 +38,13 @@ export class Timer {
         if (this.isWorkTime) {
             this.isWorkTime = false
             this.currentInterval = { ...this.breakTime }
+            this.setColor(this.breakColor)
         } else {
             this.isWorkTime = true
             this.currentInterval = { ...this.workTime }
+            this.setColor(this.workColor)
         }
-  
+
         this.start()
     }
   
@@ -52,20 +58,15 @@ export class Timer {
   
     setWorkInterval(theInterval: TimeInterval) {
         this.workTime = theInterval;
+        this.currentInterval = { ...this.workTime};
     }
 
     setBreakInterval(theInterval: TimeInterval) {
         this.breakTime = theInterval;
     }
 
-    setColor(workColor: string, breakColor: string) {
-       //this is just so we can change the background color in different intervals
-       const body = document.body;
-       if (this.isWorkTime) {
-           body.style.backgroundColor = workColor
-       } else {
-           body.style.backgroundColor = breakColor
-       }
+    setColor(color: string) {
+       this.body.style.backgroundColor = color
     }
   
     /* 
@@ -75,7 +76,6 @@ export class Timer {
     */
     clockCountDown() {
         this.clock!.innerHTML = formatTime(this.currentInterval)
-        this.setColor('#42f57b','lightblue')
         if (this.currentInterval.seconds > 0) {
             this.currentInterval.seconds = this.currentInterval.seconds - 1
         } else if (this.currentInterval.minutes > 0) {
