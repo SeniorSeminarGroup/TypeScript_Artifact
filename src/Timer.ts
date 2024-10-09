@@ -50,6 +50,14 @@ export class Timer {
       return this.currentInterval
     }
   
+    setWorkInterval(theInterval: TimeInterval) {
+        this.workTime = theInterval;
+    }
+
+    setBreakInterval(theInterval: TimeInterval) {
+        this.breakTime = theInterval;
+    }
+
     setColor(workColor: string, breakColor: string) {
        //this is just so we can change the background color in different intervals
        const body = document.body;

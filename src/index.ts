@@ -29,8 +29,8 @@ let saveTime: TimeInterval = {hours: 0, minutes: 0, seconds: 0}
 let workTime:boolean = true
 
 /**holds the current work and break interval lengths */
-let workTimeLength: TimeInterval = {hours: 0, minutes: 25, seconds: 0}
-let breakTimeLength: TimeInterval = {hours: 0, minutes: 5, seconds: 0}
+// let workTimeLength: TimeInterval = {hours: 0, minutes: 25, seconds: 0}
+// let breakTimeLength: TimeInterval = {hours: 0, minutes: 5, seconds: 0}
 
 /* task logic */
 const list = document.querySelector<HTMLUListElement>("#list")
@@ -41,12 +41,11 @@ const input = document.querySelector<HTMLInputElement>("#new-task-title")
 const clock = document.querySelector<HTMLSpanElement>('#clock-time')
 const newWorkTime: TimeInterval = { hours: 0, minutes: 0, seconds: 10 };
 const newBreakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 5 };
-const newTimer = new Timer(newWorkTime, newBreakTime, clock!)
+const newTimer = new Timer(newWorkTime, newBreakTime, clock!);
 
 /* timer button logic and event listener */
 const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button")
 startStop?.addEventListener("click", f => {
-
   if(newTimer.paused) {
     newTimer.stop()
     startStop.innerHTML = "Start"
@@ -141,8 +140,9 @@ function setTimeLength() {
   const break_seconds: number = Math.floor((break_time_minutes*60) % 60)
   
   //set the global variables
-  workTimeLength = {hours: work_hours, minutes: work_minutes, seconds: work_seconds}
-  breakTimeLength = {hours: break_hours, minutes: break_minutes, seconds: break_seconds}
-
+  const workTimeLength = {hours: work_hours, minutes: work_minutes, seconds: work_seconds}
+  const breakTimeLength = {hours: break_hours, minutes: break_minutes, seconds: break_seconds}
+  newTimer.setWorkInterval(workTimeLength)
+  newTimer.setBreakInterval(breakTimeLength)
   clock!.innerHTML = formatTime(workTimeLength)
 }
