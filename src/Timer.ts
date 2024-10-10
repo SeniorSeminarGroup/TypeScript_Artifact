@@ -27,6 +27,7 @@ export class Timer {
     }
   
     start() {
+        // This there an error for you guys here?
       this.intervalID = setInterval(() => this.clockCountDown(), 1000);
       this.paused = true;
       this.clockCountDown();
