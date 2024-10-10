@@ -13,8 +13,9 @@ export class Timer {
     currentInterval: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
     clock: HTMLSpanElement | null = null;
     body: HTMLElement = document.body;
+    colorChangeCallback: (newColor: string) => void;
   
-    constructor(workTime: TimeInterval, breakTime: TimeInterval, clock: HTMLSpanElement, workColor?: string, breakColor?: string) {
+    constructor(workTime: TimeInterval, breakTime: TimeInterval, clock: HTMLSpanElement, colorChangeCallback: (newColor: string) => void, workColor?: string, breakColor?: string) {
         this.workTime = workTime;
         this.breakTime = breakTime;
         this.currentInterval = { ...workTime};
@@ -22,6 +23,7 @@ export class Timer {
         this.workColor = workColor ? workColor : this.workColor;
         this.breakColor = breakColor ? breakColor : this.breakColor;
         this.body.style.backgroundColor = this.workColor;
+        this.colorChangeCallback = colorChangeCallback
     }
   
     start() {
@@ -40,11 +42,11 @@ export class Timer {
         if (this.isWorkTime) {
             this.isWorkTime = false
             this.currentInterval = { ...this.breakTime }
-            this.setColor(this.breakColor)
+            this.colorChangeCallback(this.breakColor)
         } else {
             this.isWorkTime = true
             this.currentInterval = { ...this.workTime }
-            this.setColor(this.workColor)
+            this.colorChangeCallback(this.workColor)
         }
 
         this.start()
@@ -65,10 +67,6 @@ export class Timer {
 
     setBreakInterval(theInterval: TimeInterval) {
         this.breakTime = theInterval;
-    }
-
-    setColor(color: string) {
-       this.body.style.backgroundColor = color
     }
   
     /* 

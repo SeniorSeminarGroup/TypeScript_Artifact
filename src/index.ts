@@ -78,7 +78,10 @@ function loadTasks(): Task[] {
 const clock = document.querySelector<HTMLSpanElement>('#clock-time')
 const newWorkTime: TimeInterval = returnWorkInterval();
 const newBreakTime: TimeInterval = { hours: 0, minutes: 1, seconds: 0 };
-const newTimer = new Timer(newWorkTime, newBreakTime, clock!);
+const newTimer = new Timer(newWorkTime, newBreakTime, clock!, setColor);
+function setColor(color: string) {
+  document.body.style.backgroundColor = color
+}
 setTimeLength()
 
 /* timer button logic and event listener */
