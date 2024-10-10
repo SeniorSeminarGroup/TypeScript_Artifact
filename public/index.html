@@ -1,29 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="dist/index.js" type="module"></script>
-    <title>Document</title>
+    <title>Pomodoro App</title>
     <style>
-        #list{
-            list-style: none;
-            padding: 0;
-        }
+      #app {
+        display: flex;
+        height: 100vh;
+      }
+      #tasks-section,
+      #timer-section,
+      #options-section {
+        flex: 1;
+        padding: 20px;
+        box-sizing: border-box;
+        position: relative;
+      }
+      #tasks-section {
+        background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+      }
+      #timer-section {
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      #options-section {
+        background-color: #f0f0f0;
+      }
+      .resizer {
+        width: 5px;
+        background: #000;
+        cursor: ew-resize;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
+      }
+      #list {
+        list-style: none;
+        padding: 0;
+      }
+      .task-completed {
+        text-decoration: line-through;
+      }
+      .task-divider {
+        border-top: 1px solid #ccc;
+        margin: 10px 0;
+      }
     </style>
-</head>
-<body>
-    <div id="clock">
-        <span id="clock-time">00:00:00</span>
-        <button id="start-stop-button">Start</button>
-    </div>
-    <div id="list">
-            <ul id="list"></ul>
+  </head>
+  <body>
+    <div id="app">
+      <div id="tasks-section">
         <form id="new-task-form">
-        <input type="text" id="new-task-title">
-        <button type="submit">Add</button>
-    </form>
+          <input type="text" id="new-task-title" />
+          <button type="submit">Add</button>
+        </form>
+        <ul id="unfinished-tasks-list"></ul>
+        <div class="task-divider"></div>
+        <ul id="finished-tasks-list"></ul>
+        <div class="resizer" id="resizer-tasks"></div>
+      </div>
+      <div id="timer-section">
+        <div id="clock">
+          <span id="clock-time">00:00:00</span>
+          <button id="start-stop-button">Start</button>
+        </div>
+        <div class="resizer" id="resizer-timer"></div>
+      </div>
+      <div id="options-section">
+        <!-- Timer options go here -->
+      </div>
     </div>
-</body>
+  </body>
 </html>

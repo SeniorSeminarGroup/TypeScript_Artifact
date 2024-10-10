@@ -10,21 +10,15 @@ Link: https://www.youtube.com/watch?v=jBmrduvKl5w
 */
 
 import { v4 as uuidV4 } from "uuid"
+import { Task, loadTasks, saveTasks } from './tasks/taskStorage';
+import { addListItem, renderTasks } from './tasks/taskUI';
 
-/* Task type to specify a task */
-type Task = {
-  id: string,
-  title: string,
-  completed: boolean,
-  createdAt: Date,
-}
-
-/* Timeinterval type to specify a length of time */
+/* TimeInterval type to specify a length of time */
 type TimeInterval = {
-  hours: number,
-  minutes: number,
-  seconds: number
-}
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
 
 class Timer {
   intervalID: number = -1;
@@ -36,10 +30,10 @@ class Timer {
   clock: HTMLSpanElement | null = null;
 
   constructor(workTime: TimeInterval, breakTime: TimeInterval, clock: HTMLSpanElement) {
-      this.workTime = workTime;
-      this.breakTime = breakTime;
-      this.currentInterval = { ...workTime};
-      this.clock = clock;
+    this.workTime = workTime;
+    this.breakTime = breakTime;
+    this.currentInterval = { ...workTime };
+    this.clock = clock;
   }
 
   start() {
@@ -49,21 +43,21 @@ class Timer {
   }
 
   stop() {
-      clearInterval(this.intervalID);
-      this.paused = false;
-      this.intervalID = -1
+    clearInterval(this.intervalID);
+    this.paused = false;
+    this.intervalID = -1
   }
 
   switchInterval() {
-      if (this.isWorkTime) {
-          this.isWorkTime = false
-          this.currentInterval = { ...this.breakTime }
-      } else {
-          this.isWorkTime = true
-          this.currentInterval = { ...this.workTime }
-      }
+    if (this.isWorkTime) {
+      this.isWorkTime = false
+      this.currentInterval = { ...this.breakTime }
+    } else {
+      this.isWorkTime = true
+      this.currentInterval = { ...this.workTime }
+    }
 
-      this.start()
+    this.start()
   }
 
   reset() {
@@ -80,29 +74,25 @@ class Timer {
   MUST INCLUDE an intervalID which points back to the setInterval that is calling it
   */
   clockCountDown() {
-      this.clock!.innerHTML = formatTime(this.currentInterval)
-      if (this.currentInterval.seconds > 0) {
-          this.currentInterval.seconds = this.currentInterval.seconds - 1
-      } else if (this.currentInterval.minutes > 0) {
-          this.currentInterval.minutes = this.currentInterval.minutes - 1
-          this.currentInterval.seconds = 59
-      } else if (this.currentInterval.hours > 0) {
-          this.currentInterval.hours = this.currentInterval.hours - 1
-          this.currentInterval.minutes = 59
-          this.currentInterval.seconds = 59
-      } else { // current time interval finished 
-          // end the timer interval
-          this.stop()
-          // switch time interval type
-          this.switchInterval()
-      }
+    this.clock!.innerHTML = formatTime(this.currentInterval)
+    if (this.currentInterval.seconds > 0) {
+      this.currentInterval.seconds = this.currentInterval.seconds - 1
+    } else if (this.currentInterval.minutes > 0) {
+      this.currentInterval.minutes = this.currentInterval.minutes - 1
+      this.currentInterval.seconds = 59
+    } else if (this.currentInterval.hours > 0) {
+      this.currentInterval.hours = this.currentInterval.hours - 1
+      this.currentInterval.minutes = 59
+      this.currentInterval.seconds = 59
+    } else { // current time interval finished 
+      // end the timer interval
+      this.stop()
+      // switch time interval type
+      this.switchInterval()
+    }
   }
 }
 
-/* task logic */
-const list = document.querySelector<HTMLUListElement>("#list")
-const form = document.querySelector("#new-task-form") as HTMLFormElement | null
-const input = document.querySelector<HTMLInputElement>("#new-task-title")
 
 //new timer (created on page refresh)
 const clock = document.querySelector<HTMLSpanElement>('#clock-time')
@@ -114,80 +104,58 @@ const newTimer = new Timer(newWorkTime, newBreakTime, clock!)
 const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button")
 startStop?.addEventListener("click", f => {
 
-  if(newTimer.paused) {
+  if (newTimer.paused) {
     newTimer.stop()
     startStop.innerHTML = "Start"
   } else {
     newTimer.start()
     startStop.innerHTML = "Pause"
   }
-  
+
 })
 
 /* place to store the Interval timer if paused */
 let globalIntervalId: number = -1
 /* place to save the time if user pauses the timer */
-let saveTime: TimeInterval = {hours: 0, minutes: 0, seconds: 0}
+let saveTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 }
 /* track if user is currently in work or break mode */
-let workTime:boolean = true
+let workTime: boolean = true
 
-const tasks: Task[] = loadTasks()
-tasks.forEach(addListItem)
+/**
+ * Format a TimeInterval object into a string
+ * @param time - The TimeInterval object to format
+ * @returns A string representing the formatted time
+ */
+function formatTime(time: TimeInterval): string {
+  const hourString: string = time.hours > 9 ? String(time.hours) : "0" + time.hours;
+  const minutesString: string = time.minutes > 9 ? String(time.minutes) : "0" + time.minutes;
+  const secondsString: string = time.seconds > 9 ? String(time.seconds) : "0" + time.seconds;
 
-form?.addEventListener("submit", e => {
-  e.preventDefault()
+  return hourString + ":" + minutesString + ":" + secondsString;
+}
 
-  if (input?.value == "" || input?.value == null) return
+/* task logic */
+const unfinishedList = document.querySelector<HTMLUListElement>("#unfinished-tasks-list");
+const finishedList = document.querySelector<HTMLUListElement>("#finished-tasks-list");
+const form = document.querySelector<HTMLFormElement>("#new-task-form");
+const input = document.querySelector<HTMLInputElement>("#new-task-title");
+const tasks: Task[] = loadTasks();
+renderTasks(tasks, unfinishedList, finishedList);
+
+form?.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  if (input?.value == "" || input?.value == null) return;
 
   const newTask: Task = {
     id: uuidV4(),
     title: input.value,
     completed: false,
-    createdAt: new Date()
-  }
-  tasks.push(newTask)
+    createdAt: new Date(),
+  };
+  tasks.push(newTask);
 
-  addListItem(newTask)
-  input.value = ""
-})
-
-function addListItem(task: Task): boolean {
-  const item = document.createElement("li")
-  const label = document.createElement("label")
-  const checkbox = document.createElement("input")
-  checkbox.addEventListener("change", () => {
-    task.completed = checkbox.checked
-    saveTasks()
-  })
-  checkbox.type = "checkbox"
-  checkbox.checked = task.completed
-  label.append(checkbox, task.title)
-  item.append(label)
-  list?.append(item)
-
-  return true
-}
-
-function saveTasks() {
-  localStorage.setItem("TASKS", JSON.stringify(tasks))
-}
-
-function loadTasks(): Task[] {
-  const taskJSON = localStorage.getItem("TASKS")
-  if(taskJSON == null) return []
-
-  return JSON.parse(taskJSON)
-}
-
-/* 
-Formats time into a string, accepts the TimeInterval type. 
-Please use this when you want to display the time
-*/
-function formatTime(time: TimeInterval): string
-{
-  const hourString: string = (time.hours > 9)? String(time.hours): '0'+time.hours
-  const minutesString: string = (time.minutes > 9)? String(time.minutes): '0'+time.minutes
-  const secondsString: string = (time.seconds > 9)? String(time.seconds): '0'+time.seconds
-
-  return hourString + ":" + minutesString + ":" + secondsString
-}
+  addListItem(newTask, unfinishedList);
+  saveTasks(tasks);
+  input.value = "";
+});
