@@ -21,38 +21,11 @@ type Task = {
   createdAt: Date,
 }
 
-/* place to store the Interval timer if paused */
-let globalIntervalId: number = -1
-/* place to save the time if user pauses the timer */
-let saveTime: TimeInterval = {hours: 0, minutes: 0, seconds: 0}
-/* track if user is currently in work or break mode */
-let workTime:boolean = true
-
+// #####################    TASK LIST    #####################
 /* task logic */
 const list = document.querySelector<HTMLUListElement>("#list")
 const form = document.querySelector("#new-task-form") as HTMLFormElement | null
 const input = document.querySelector<HTMLInputElement>("#new-task-title")
-
-//new timer (created on page refresh)
-const clock = document.querySelector<HTMLSpanElement>('#clock-time')
-const newWorkTime: TimeInterval = returnWorkInterval();
-const newBreakTime: TimeInterval = { hours: 0, minutes: 1, seconds: 0 };
-const newTimer = new Timer(newWorkTime, newBreakTime, clock!);
-setTimeLength()
-
-/* timer button logic and event listener */
-const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button")
-startStop?.addEventListener("click", f => {
-  if(newTimer.paused) {
-    newTimer.stop()
-    startStop.innerHTML = "Start"
-  } else {
-    newTimer.start()
-    startStop.innerHTML = "Pause"
-  }
-  
-})
-
 const tasks: Task[] = loadTasks()
 tasks.forEach(addListItem)
 
@@ -72,12 +45,6 @@ form?.addEventListener("submit", e => {
   addListItem(newTask)
   input.value = ""
 })
-
-const timeSet = document.querySelector<HTMLButtonElement>("#set-break")
-timeSet?.addEventListener('click', () => {
-  setTimeLength()
-});
-
 function addListItem(task: Task): boolean {
   const item = document.createElement("li")
   const label = document.createElement("label")
@@ -105,6 +72,33 @@ function loadTasks(): Task[] {
 
   return JSON.parse(taskJSON)
 }
+
+// #####################    TIMER    #####################
+//new timer (created on page refresh)
+const clock = document.querySelector<HTMLSpanElement>('#clock-time')
+const newWorkTime: TimeInterval = returnWorkInterval();
+const newBreakTime: TimeInterval = { hours: 0, minutes: 1, seconds: 0 };
+const newTimer = new Timer(newWorkTime, newBreakTime, clock!);
+setTimeLength()
+
+/* timer button logic and event listener */
+const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button")
+startStop?.addEventListener("click", f => {
+  if(newTimer.paused) {
+    newTimer.stop()
+    startStop.innerHTML = "Start"
+  } else {
+    newTimer.start()
+    startStop.innerHTML = "Pause"
+  }
+  
+})
+
+// #####################    TIME SET    #####################
+const timeSet = document.querySelector<HTMLButtonElement>("#set-break")
+timeSet?.addEventListener('click', () => {
+  setTimeLength()
+});
 
 /**
  * Changes the workTimeLength and breakTimeLength variables to the values inputed by the user

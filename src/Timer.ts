@@ -14,11 +14,13 @@ export class Timer {
     clock: HTMLSpanElement | null = null;
     body: HTMLElement = document.body;
   
-    constructor(workTime: TimeInterval, breakTime: TimeInterval, clock: HTMLSpanElement, workColor?: string, breakcolor?: string) {
-        this.workTime = workTime ?? '#42f57b';
-        this.breakTime = breakTime ?? 'lightblue';
+    constructor(workTime: TimeInterval, breakTime: TimeInterval, clock: HTMLSpanElement, workColor?: string, breakColor?: string) {
+        this.workTime = workTime;
+        this.breakTime = breakTime;
         this.currentInterval = { ...workTime};
         this.clock = clock;
+        this.workColor = workColor ? workColor : this.workColor;
+        this.breakColor = breakColor ? breakColor : this.breakColor;
         this.body.style.backgroundColor = this.workColor;
     }
   
