@@ -1,9 +1,4 @@
-export type Task = {
-    id: string;
-    title: string;
-    completed: boolean;
-    createdAt: Date;
-};
+import { Task } from "./Task";
 
 // Load tasks from local storage
 export function loadTasks(): Task[] {

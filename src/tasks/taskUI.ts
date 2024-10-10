@@ -1,6 +1,7 @@
 // src/tasks/taskUI.ts
 
-import { Task, saveTasks } from './taskStorage';
+import { saveTasks } from './taskStorage';
+import { Task } from "./Task";
 
 let tasks: Task[] = [];
 
