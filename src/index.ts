@@ -43,6 +43,24 @@ form?.addEventListener("submit", (e) => {
   input.value = "";
 });
 
+// reset?.addEventListener("button", () => {
+//   console.log("reset")
+//   for(let i=0; i<tasks.length; i++){
+//     console.log(i)
+//     tasks.pop()
+//   }
+// });
+
+const reset = document.querySelector<HTMLButtonElement>("#reset-list")
+reset?.addEventListener('click', () => {
+  let length = tasks.length
+  for(let i=0; i<length; i++){
+    console.log(tasks)
+    tasks.splice(0,1)
+  }
+  renderTasks(tasks, unfinishedList, finishedList);
+});
+
 // #####################    TIMER    #####################
 //new timer (created on page refresh)
 const clock = document.querySelector<HTMLSpanElement>('#clock-time')
