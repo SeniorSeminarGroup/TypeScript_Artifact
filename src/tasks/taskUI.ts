@@ -1,7 +1,7 @@
 // src/tasks/taskUI.ts
 
 import { saveTasks } from './taskStorage';
-import { Task } from "./Task";
+import { Task, easyTask, mediumTask, hardTask } from "./Task";
 
 let tasks: Task[] = [];
 
@@ -19,6 +19,9 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
 
     checkbox.type = "checkbox";
     checkbox.checked = task.completed;
+    label.style.textDecoration = "underline"; 
+    label.style.textDecorationColor = task.color;
+    label.style.textDecorationThickness = "2px";
     label.append(checkbox, task.title);
     item.append(label);
 

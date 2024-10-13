@@ -1,9 +1,8 @@
-import { v4 as uuidV4 } from "uuid"
 import { TimeInterval } from "./TimeInterval"
 import { formatTime } from "./TimeInterval"
 
 export class Timer {
-    intervalID: number = -1;
+    intervalID: number | NodeJS.Timeout= -1;
     workTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
     breakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
     workColor: string = '#42f57b';
