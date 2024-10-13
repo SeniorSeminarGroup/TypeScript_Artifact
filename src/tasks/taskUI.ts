@@ -10,6 +10,12 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
     const item = document.createElement("li");
     const label = document.createElement("label");
     const checkbox = document.createElement("input");
+    const remove = document.createElement("button");
+    const up = document.createElement("button");
+    const downe = document.createElement("button");
+
+    const unfinishedList = document.querySelector<HTMLUListElement>("#unfinished-tasks-list");
+    const finishedList = document.querySelector<HTMLUListElement>("#finished-tasks-list");
 
     checkbox.addEventListener("change", () => {
         task.completed = checkbox.checked;
@@ -19,7 +25,11 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
 
     checkbox.type = "checkbox";
     checkbox.checked = task.completed;
-    label.append(checkbox, task.title);
+    remove.type = "button";
+    remove.textContent = "delete";
+    remove.id = "remove-button";
+    up.type = 
+    label.append(checkbox, task.title, remove);
     item.append(label);
 
     if (task.completed) {
@@ -27,6 +37,17 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
     } else {
         item.classList.remove("task-completed");
     }
+//Addded delete buttons for individual tasks
+    remove.addEventListener("click", () => {
+        task.removed = true
+        let length = tasks.length
+        for(let i=0; i<length; i++){
+            if(tasks.at(i)?.removed){
+                tasks.splice(i,1)
+            }
+        }
+        renderTasks(tasks, unfinishedList, finishedList)
+    });
 
     list?.append(item);
 
