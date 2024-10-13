@@ -4,6 +4,7 @@ import { Task } from "./Task";
 export function loadTasks(): Task[] {
     const taskJSON = localStorage.getItem("TASKS");
     if (taskJSON == null) return [];
+    
     return JSON.parse(taskJSON);
 }
 

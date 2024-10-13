@@ -16,10 +16,12 @@
     "@types/snowpack-env": "^2.3.3",
     "@types/uuid": "^10.0.0",
     "chai": "^5.1.1",
+    "execa": "^9.4.0",
+    "hereby": "^1.10.0",
     "mocha": "^10.7.3",
     "prettier": "^2.2.1",
     "snowpack": "^3.2.2",
     "ts-node": "^10.9.2",
-    "typescript": "^4.2.4"
+    "typescript": "^4.9.5"
   }
 }

@@ -112,3 +112,7 @@ function returnWorkInterval(): TimeInterval {
   console.log("return work interval: workTimeLength = " + work_seconds)
   return workTimeLength
 }
+// #####################    Splitview    #####################
+
+// #####################    Graph Generation?    #####################
+
