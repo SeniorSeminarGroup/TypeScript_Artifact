@@ -12,7 +12,7 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
     const checkbox = document.createElement("input");
     const remove = document.createElement("button");
     const up = document.createElement("button");
-    const downe = document.createElement("button");
+    const down = document.createElement("button");
 
     const unfinishedList = document.querySelector<HTMLUListElement>("#unfinished-tasks-list");
     const finishedList = document.querySelector<HTMLUListElement>("#finished-tasks-list");
@@ -28,8 +28,13 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
     remove.type = "button";
     remove.textContent = "delete";
     remove.id = "remove-button";
-    up.type = 
-    label.append(checkbox, task.title, remove);
+    up.type = "button";
+    up.innerHTML = "&#8593";
+    up.id = "up"
+    down.innerHTML = "&#8595";
+    down.type = "button";
+    down.id = "down";
+    label.append(up, down, checkbox, task.title, remove);
     item.append(label);
 
     if (task.completed) {
@@ -39,15 +44,33 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
     }
 //Addded delete buttons for individual tasks
     remove.addEventListener("click", () => {
-        task.removed = true
-        let length = tasks.length
-        for(let i=0; i<length; i++){
-            if(tasks.at(i)?.removed){
+        for(let i=0; i<tasks.length; i++){
+            if(tasks.at(i)?.id == task.id){
                 tasks.splice(i,1)
             }
         }
         renderTasks(tasks, unfinishedList, finishedList)
     });
+
+    up.addEventListener("click", () => {
+        for(let i=0; i<tasks.length; i++){
+            if(tasks.at(i)?.id == task.id){
+                let theTask: Task = tasks.splice(i,1)[0]
+                tasks.splice(i-1,0, theTask)
+            }
+        }
+        renderTasks(tasks, unfinishedList, finishedList)
+    })
+
+    down.addEventListener("click", () => {
+        for(let i=0; i<tasks.length; i++){
+            if(tasks.at(i)?.id == task.id){
+                let theTask: Task = tasks.splice(i,1)[0]
+                tasks.splice(i+1,0, theTask)
+            }
+        }
+        renderTasks(tasks, unfinishedList, finishedList)
+    })
 
     list?.append(item);
 

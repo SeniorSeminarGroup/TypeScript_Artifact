@@ -35,7 +35,6 @@ form?.addEventListener("submit", (e) => {
     id: uuidV4(),
     title: input.value,
     completed: false,
-    removed: false,
     createdAt: new Date(),
   };
   tasks.push(newTask);
