@@ -53,24 +53,47 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
     });
 
     up.addEventListener("click", () => {
-        for(let i=0; i<tasks.length; i++){
+        let i = 0
+        let look = true
+        while(i<tasks.length && look){
             if(tasks.at(i)?.id == task.id){
+                if(i == 0){
+
+                }else{
                 let theTask: Task = tasks.splice(i,1)[0]
+                console.log(theTask)
                 tasks.splice(i-1,0, theTask)
+                look = false
+                }
+                
             }
+            i++
         }
+        console.log(tasks)
         renderTasks(tasks, unfinishedList, finishedList)
-    })
+    });
+
 
     down.addEventListener("click", () => {
-        for(let i=0; i<tasks.length; i++){
+        let i = 0
+        let look = true
+        while(i<tasks.length && look){
             if(tasks.at(i)?.id == task.id){
+                if(i == 0){
+
+                }else{
                 let theTask: Task = tasks.splice(i,1)[0]
+                console.log(theTask)
                 tasks.splice(i+1,0, theTask)
+                look = false
+                }
+                
             }
+            i++
         }
+        console.log(tasks)
         renderTasks(tasks, unfinishedList, finishedList)
-    })
+    });
 
     list?.append(item);
 
@@ -89,5 +112,5 @@ export function renderTasks(taskList: Task[], unfinishedList: HTMLUListElement |
         } else {
             addListItem(task, unfinishedList);
         }
-    });
+    })
 }
