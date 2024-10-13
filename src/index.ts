@@ -14,6 +14,9 @@ import { TimeInterval } from "./TimeInterval"
 import { formatTime } from "./TimeInterval"
 import { loadTasks, saveTasks } from './tasks/taskStorage';
 import { Task } from "./tasks/Task";
+import { easyTask } from "./tasks/Task";
+import { mediumTask } from "./tasks/Task";
+import { hardTask } from "./tasks/Task";
 import { addListItem, renderTasks } from './tasks/taskUI';
 
 // #####################    TASK LIST    #####################
@@ -30,12 +33,33 @@ form?.addEventListener("submit", (e) => {
 
   if (input?.value == "" || input?.value == null) return;
 
-  const newTask: Task = {
-    id: uuidV4(),
-    title: input.value,
-    completed: false,
-    createdAt: new Date(),
-  };
+  let taskDifficulty: string = "";
+
+  const difficulties = document.querySelectorAll<HTMLInputElement>('[name="difficulty"]');
+  
+  difficulties.forEach((difficultyOption) => {
+      if (difficultyOption.checked) {
+          // Get the label associated with the checked radio button
+          const label = document.querySelector(`label[for="${difficultyOption.id}"]`);
+          if (label) {
+              taskDifficulty = label.innerHTML.trim();  // Assign the inner HTML of the label
+              console.log("got here")
+          }
+      }
+  });
+
+  let newTask : Task;
+
+  if (taskDifficulty == "Easy"){
+    newTask = new easyTask(uuidV4(), input.value, false, new Date())
+  }
+  else if (taskDifficulty == "Medium"){
+    newTask = new mediumTask(uuidV4(), input.value, false, new Date())
+  }
+  else {
+    newTask = new hardTask(uuidV4(), input.value, false, new Date())
+  }
+
   tasks.push(newTask);
 
   addListItem(newTask, unfinishedList);
