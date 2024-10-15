@@ -4,6 +4,7 @@
     "build": "snowpack build",
     "test": "mocha"
   },
+  "type": "module",
   "dependencies": {
     "canvas-confetti": "^1.2.0",
     "uuid": "^10.0.0"
