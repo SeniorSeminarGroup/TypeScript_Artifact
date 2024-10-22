@@ -10,33 +10,26 @@ let tasks: Task[] = [];
 export function addListItem(task: Task, list: HTMLUListElement | null): boolean {
     const item = document.createElement("li");
     const label = document.createElement("label");
-    const checkbox = document.createElement("input");
-    const remove = document.createElement("button");
-    const up = document.createElement("button");
-    const down = document.createElement("button");
 
     const unfinishedList = document.querySelector<HTMLUListElement>("#unfinished-tasks-list");
     const finishedList = document.querySelector<HTMLUListElement>("#finished-tasks-list");
 
-    checkbox.addEventListener("change", () => {
-        task.completed = checkbox.checked;
-        saveTasks(tasks);
-        renderTasks(tasks, unfinishedList, finishedList)
-        renderTasks(tasks, unfinishedList, finishedList)
-    });
+    const taskItemHTML = `
+        <button type="button" id="up" class="btn btn-secondary">&#8593;</button>
+        <button type="button" id="down" class="btn btn-secondary" style="margin-left: 3px; margin-right: 3px;">&#8595;</button>
+        <input type="checkbox" ${task.completed ? "checked" : ""}>
+        ${task.title}
+        <button type="button" id="remove-button" class="btn btn-danger material-icons">delete_forever</button>
+        `;
 
-    checkbox.type = "checkbox";
-    checkbox.checked = task.completed;
-    remove.type = "button";
-    remove.textContent = "delete";
-    remove.id = "remove-button";
-    up.type = "button";
-    up.innerHTML = "&#8593";
-    up.id = "up"
-    down.innerHTML = "&#8595";
-    down.type = "button";
-    down.id = "down";
-    label.append(up, down, checkbox, task.title, remove);
+    label.innerHTML = taskItemHTML;
+
+    const upButton = label.querySelector("#up") as HTMLButtonElement;
+    const downButton = label.querySelector("#down") as HTMLButtonElement;
+    const removeButton = label.querySelector("#remove-button") as HTMLButtonElement;
+    const checkbox = label.querySelector("input[type='checkbox']") as HTMLInputElement;
+
+    //label.prepend(checkbox);
     item.append(label);
 
     if (task.completed) {
@@ -44,8 +37,8 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
     } else {
         item.classList.remove("task-completed");
     }
-//Addded delete buttons for individual tasks
-    remove.addEventListener("click", () => {
+    //Addded delete buttons for individual tasks'
+    removeButton.addEventListener("click", () => {
         for(let i=0; i<tasks.length; i++){
             if(tasks.at(i)?.id == task.id){
                 tasks.splice(i,1)
@@ -54,7 +47,7 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
         renderTasks(tasks, unfinishedList, finishedList)
     });
 
-    up.addEventListener("click", () => {
+    upButton.addEventListener("click", () => {
         let i = 0
         let look = true
         while(i<tasks.length && look){
@@ -75,7 +68,7 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
     });
 
 
-    down.addEventListener("click", () => {
+    downButton.addEventListener("click", () => {
         let i = 0
         let look = true
         while(i<getNumUnfinishedTasks()-1 && look && !task.completed){
@@ -92,6 +85,13 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
             }
             i++
         }
+        renderTasks(tasks, unfinishedList, finishedList)
+    });
+
+    checkbox.addEventListener("change", () => {
+        task.completed = checkbox.checked;
+        saveTasks(tasks);
+        renderTasks(tasks, unfinishedList, finishedList)
         renderTasks(tasks, unfinishedList, finishedList)
     });
 
