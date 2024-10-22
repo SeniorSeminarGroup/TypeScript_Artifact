@@ -1,115 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="dist/index.js" type="module"></script>
     <title>Pomodoro App</title>
     <style>
-      #app {
-        display: flex;
-        height: 100vh;
-      }
-      #tasks-section,
-      #timer-section,
-      #options-section {
-        flex: 1;
-        padding: 20px;
+      * {
+        margin: 0;
+        padding: 0;
         box-sizing: border-box;
-        position: relative;
       }
-      #tasks-section {
-        background-color: #f0f0f0;
-        display: flex;
-        flex-direction: column;
+
+      body, html {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        width: 100%;
+        margin: 0;
       }
-      #timer-section {
-        background-color: #ffffff;
+
+      .left {
+        background-color: #f4a261;
+        padding: 8vw;
+        gap: 20px;
+        border-right: 3px solid #dddddd;
+      }
+
+      .right {
+        background-color: #2a9d8f;
+        padding: 8vw;
+        gap: 20px;
+      }
+
+      .divide {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-      }
-      #options-section {
-        background-color: #f0f0f0;
-      }
-      .resizer {
-        width: 5px;
-        background: #000;
-        cursor: ew-resize;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        z-index: 1;
-      }
-      #list {
-        list-style: none;
-        padding: 0;
-      }
-      .task-completed {
-        text-decoration: line-through;
-      }
-      .task-divider {
-        border-top: 1px solid #ccc;
-        margin: 10px 0;
-      }
-      body,
-      html {
-        height: 100%;
-        margin: 0;
-        display: flex;
-        background-color: #ffffff;
+        text-align: center;
+        transition: flex 0.3s ease;
       }
 
-      #clock,
-      #breaks,
-      #list {
-        padding: 20px;
+      h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
       }
 
-      #left-container {
+      form {
         display: flex;
         flex-direction: column;
-        flex: 1;
-        background-color: #ffffff; /* Light background for the left side */
+        gap: 10px;
       }
 
-      #list {
-        flex: 1;
-        background-color: #ffffff; /* White background for the right side */
-        border-left: 2px solid #ddd; /* Divider between the two sections */
-        overflow-y: auto;
-        list-style: none;
-        padding: 0;
+      input[type="text"] {
+        padding: 10px;
+        width: 100%;
+        border-radius: 5px;
+        border: none;
+        font-size: 1rem;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      ul, ol {
+        background-color: #f0f0f0;
+        padding: 10px;
+        width: 100%;
+        border-radius: 5px;
+        list-style-position: inside;
+        margin: 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        overflow-wrap: break-word;
+        overflow: visible;
+        word-wrap: break-word;
+      }
+
+      li {
+        padding: 7px;
+        background-color: #e0e0e0;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        margin-left: auto;
+        margin-right: auto; 
+        text-align: left;
+        flex-grow: 1;
+        overflow: visible; 
+      }
+
+      .task-divider {
+        width: 100%;
+        height: 3px;
+        background-color: #ffffff;
+        margin: 20px 0;
+        overflow: visible; 
+      }
+
+      .task-completed {
+        text-decoration: line-through;
+        color: #888;
+      }
+
+      #clock {
+        color: white;
+        font-size: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      #breaks {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        color: white;
+        font-size: 1rem;
+      }
+
+      input[type="number"] {
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        font-size: 1rem;
       }
     </style>
   </head>
   <body>
-    <div id="app">
-      <div id="tasks-section">
-        <form id="new-task-form">
-          <input type="text" id="new-task-title" />
-          <button type="submit">Add</button>
-        </form>
-        <ul id="unfinished-tasks-list"></ul>
-        <div class="task-divider"></div>
-        <ul id="finished-tasks-list"></ul>
-        <!-- <div class="resizer" id="resizer-tasks"></div> -->
-        <!-- Working on it-->
-      </div>
-      <div left-container>
-        <div id="clock">
-          <span id="clock-time">00:00:00</span>
-          <button id="start-stop-button">Start</button>
+    <div class="container-fluid vh-100">
+      <div class="row h-100">
+        <div class="col-md-6 left d-flex flex-column align-items-center">
+          <form id="new-task-form">
+            <input type="text" id="new-task-title" placeholder="New task..." />
+            <button class="btn btn-primary" type="submit">Add Task</button>
+          </form>
+          <h2 for="unfinished-tasks-list" style="color: white">To Do:</h2>
+          <ol id="unfinished-tasks-list">
+          </ol>
+          <div class="task-divider"></div>
+          <h2 for="unfinished-tasks-list" style="color: white">Completed:</h2>
+          <ol id="finished-tasks-list">
+          </ol>
         </div>
-        <div id="breaks">
-          <label for="work-length">Work Interval Length (in minutes)</label>
-          <input type="number" id="work-length" placeholder="0" />
-          <label for="break-length">Break Interval Length (in minutes)</label>
-          <input type="number" id="break-length" placeholder="0" />
-          <button type="button" id="set-break">Set</button>
+        <div class="col-md-6 right d-flex flex-column">
+          <div id="clock">
+            <span id="clock-time">00:00:00</span>
+            <button class="btn btn-primary btn-lg" id="start-stop-button">Start</button>
+          </div>
+          <div id="breaks">
+            <label for="work-length">Work Interval Length (minutes)</label>
+            <input type="number" id="work-length" placeholder="25" />
+            <label for="break-length">Break Interval Length (minutes)</label>
+            <input type="number" id="break-length" placeholder="5" />
+            <button class="btn btn-primary btn-sm" type="button" id="set-break">Set Intervals</button>
+          </div>
         </div>
       </div>
     </div>
