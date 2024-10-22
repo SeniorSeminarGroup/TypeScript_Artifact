@@ -7,13 +7,16 @@
   "type": "module",
   "dependencies": {
     "canvas-confetti": "^1.2.0",
+    "jsdom": "^25.0.1",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@snowpack/plugin-typescript": "^1.2.1",
     "@types/canvas-confetti": "^1.0.0",
     "@types/chai": "^5.0.0",
+    "@types/jsdom": "^21.1.7",
     "@types/mocha": "^10.0.9",
+    "@types/sinon": "^17.0.3",
     "@types/snowpack-env": "^2.3.3",
     "@types/uuid": "^10.0.0",
     "chai": "^5.1.1",
@@ -21,6 +24,7 @@
     "hereby": "^1.10.0",
     "mocha": "^10.7.3",
     "prettier": "^2.2.1",
+    "sinon": "^19.0.2",
     "snowpack": "^3.2.2",
     "ts-node": "^10.9.2",
     "typescript": "^4.9.5"

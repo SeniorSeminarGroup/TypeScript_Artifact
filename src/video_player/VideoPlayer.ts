@@ -3,19 +3,21 @@ export class VideoPlayer {
     private playButton: HTMLButtonElement;
     private pauseButton: HTMLButtonElement;
     private stopButton: HTMLButtonElement;
+    private loopButton: HTMLButtonElement;
 
-    constructor(videoElementId: string, playButtonId: string, pauseButtonId: string, stopButtonId: string) {
+    constructor(videoElementId: string, playButtonId: string, pauseButtonId: string, stopButtonId: string, loopButtonId: string) {
         this.videoElement = document.getElementById(videoElementId) as HTMLVideoElement;
         this.playButton = document.getElementById(playButtonId) as HTMLButtonElement;
         this.pauseButton = document.getElementById(pauseButtonId) as HTMLButtonElement;
         this.stopButton = document.getElementById(stopButtonId) as HTMLButtonElement;
-        this.addEventListeners();
+        this.loopButton = document.getElementById(loopButtonId) as HTMLButtonElement; this.addEventListeners();
     }
 
     private addEventListeners(): void {
         this.playButton.addEventListener('click', () => this.playVideo());
         this.pauseButton.addEventListener('click', () => this.pauseVideo());
         this.stopButton.addEventListener('click', () => this.stopVideo());
+        this.loopButton.addEventListener('click', () => this.toggleLoop());
     }
 
     private playVideo(): void {

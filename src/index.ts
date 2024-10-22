@@ -201,6 +201,6 @@ function resizeHorizontal(e: MouseEvent) {
 
 // #####################    Video Player    #####################
 
-const videoPlayer = new VideoPlayer('video', 'playButton', 'pauseButton', 'stopButton');
+const videoPlayer = new VideoPlayer('video', 'playButton', 'pauseButton', 'stopButton', 'loopButton');
 
 videoPlayer.loadVideo(videoFile);
