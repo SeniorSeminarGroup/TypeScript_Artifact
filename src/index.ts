@@ -12,6 +12,10 @@ import { v4 as uuidV4 } from "uuid"
 import { Timer } from "./Timer"
 import { TimeInterval } from "./TimeInterval"
 import { formatTime } from "./TimeInterval"
+
+import { VideoPlayer } from './video_player/VideoPlayer';
+import videoFile from './assets/videos/gone.mp4';
+
 import { loadTasks, saveTasks } from './tasks/taskStorage';
 import { Task } from "./tasks/Task";
 import { easyTask } from "./tasks/Task";
@@ -36,24 +40,24 @@ form?.addEventListener("submit", (e) => {
   let taskDifficulty: string = "";
 
   const difficulties = document.querySelectorAll<HTMLInputElement>('[name="difficulty"]');
-  
+
   difficulties.forEach((difficultyOption) => {
-      if (difficultyOption.checked) {
-          // Get the label associated with the checked radio button
-          const label = document.querySelector(`label[for="${difficultyOption.id}"]`);
-          if (label) {
-              taskDifficulty = label.innerHTML.trim();  // Assign the inner HTML of the label
-              console.log("got here")
-          }
+    if (difficultyOption.checked) {
+      // Get the label associated with the checked radio button
+      const label = document.querySelector(`label[for="${difficultyOption.id}"]`);
+      if (label) {
+        taskDifficulty = label.innerHTML.trim();  // Assign the inner HTML of the label
+        console.log("got here")
       }
+    }
   });
 
-  let newTask : Task;
+  let newTask: Task;
 
-  if (taskDifficulty == "Easy"){
+  if (taskDifficulty == "Easy") {
     newTask = new easyTask(uuidV4(), input.value, false, new Date())
   }
-  else if (taskDifficulty == "Medium"){
+  else if (taskDifficulty == "Medium") {
     newTask = new mediumTask(uuidV4(), input.value, false, new Date())
   }
   else {
@@ -72,10 +76,11 @@ form?.addEventListener("submit", (e) => {
 const clock = document.querySelector<HTMLSpanElement>('#clock-time')
 const newWorkTime: TimeInterval = returnWorkInterval();
 const newBreakTime: TimeInterval = { hours: 0, minutes: 1, seconds: 0 };
-const newTimer = new Timer(newWorkTime, newBreakTime, clock!, setColor);
 function setColor(color: string) {
-  document.body.style.backgroundColor = color
+  document.querySelector<HTMLDivElement>('#timer-section')!.style.backgroundColor = color
 }
+const newTimer = new Timer(newWorkTime, newBreakTime, clock!, setColor);
+
 setTimeLength()
 
 /* timer button logic and event listener */
@@ -139,7 +144,63 @@ function returnWorkInterval(): TimeInterval {
   console.log("return work interval: workTimeLength = " + work_seconds)
   return workTimeLength
 }
+// SO BUGGY
 // #####################    Splitview    #####################
+const container = document.querySelector('.container') as HTMLElement;
+const resizers = document.querySelectorAll('.resizer');
 
+let isResizing = false;
+let currentResizer: HTMLElement;
+let prevX: number;
+
+resizers.forEach(resizer => {
+  resizer.addEventListener('mousedown', (e: Event) => {
+    const mouseEvent = e as MouseEvent;
+    isResizing = true;
+    currentResizer = resizer as HTMLElement;
+    prevX = mouseEvent.clientX;
+  });
+});
+
+document.addEventListener('mousemove', (e: MouseEvent) => {
+  if (!isResizing) return;
+
+  const direction = currentResizer.getAttribute('data-direction');
+  if (direction === 'horizontal') {
+    resizeHorizontal(e);
+  }
+
+  prevX = e.clientX;
+});
+
+document.addEventListener('mouseup', () => {
+  isResizing = false;
+});
+
+function resizeHorizontal(e: MouseEvent) {
+  const chunk1 = currentResizer.previousElementSibling as HTMLElement;
+  const chunk2 = currentResizer.nextElementSibling as HTMLElement;
+
+  let newWidth1 = parseInt(getComputedStyle(chunk1).width) + (e.clientX - prevX);
+  let newWidth2 = parseInt(getComputedStyle(chunk2).width) - (e.clientX - prevX);
+
+  const minWidth = 50; // Minimum width to prevent visual errors
+
+  if (newWidth1 < minWidth) {
+    newWidth1 = minWidth;
+    newWidth2 = parseInt(getComputedStyle(container).width) - minWidth - 5;
+  } else if (newWidth2 < minWidth) {
+    newWidth2 = minWidth;
+    newWidth1 = parseInt(getComputedStyle(container).width) - minWidth - 5;
+  }
+
+  chunk1.style.width = `${newWidth1}px`;
+  chunk2.style.width = `${newWidth2}px`;
+}
 // #####################    Graph Generation?    #####################
 
+// #####################    Video Player    #####################
+
+const videoPlayer = new VideoPlayer('video', 'playButton', 'pauseButton', 'stopButton');
+
+videoPlayer.loadVideo(videoFile);

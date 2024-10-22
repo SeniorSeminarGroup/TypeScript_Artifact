@@ -2,112 +2,101 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="dist/index.js" type="module"></script>
-    <title>Pomodoro App</title>
+    <title>Video Player and Tasks</title>
     <style>
-      #app {
-        display: flex;
-        height: 100vh;
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
       }
-      #tasks-section,
-      #timer-section,
-      #options-section {
+
+      .container {
+        display: flex;
+        height: 100%;
+      }
+
+      .chunk {
         flex: 1;
         padding: 20px;
         box-sizing: border-box;
         position: relative;
+        overflow: auto;
+        border: 1px solid #ccc; /* Add border */
       }
+
       #tasks-section {
         background-color: #f0f0f0;
         display: flex;
         flex-direction: column;
       }
+
       #timer-section {
-        background-color: #ffffff;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
       }
-      #options-section {
+
+      #videos-section {
         background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
+
       .resizer {
         width: 5px;
-        background: #000;
+        background: #ccc;
         cursor: ew-resize;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
+        position: relative;
         z-index: 1;
       }
+
       #list {
         list-style: none;
         padding: 0;
       }
+
       .task-completed {
         text-decoration: line-through;
       }
+
       .task-divider {
         border-top: 1px solid #ccc;
         margin: 10px 0;
       }
-      body,
-      html {
+
+      video {
+        width: 100%;
         height: 100%;
-        margin: 0;
-        display: flex;
-        background-color: #ffffff;
-      }
-
-      #clock,
-      #breaks,
-      #list {
-        padding: 20px;
-      }
-
-      #left-container {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        background-color: #ffffff; 
-      }
-
-      #list {
-        flex: 1;
-        background-color: #ffffff; 
-        border-left: 2px solid #ddd;
-        overflow-y: auto;
-        list-style: none;
-        padding: 0;
+        object-fit: cover;
       }
     </style>
   </head>
   <body>
-    <div id="app">
-      <div id="tasks-section">
+    <div class="container">
+      <div class="chunk" id="tasks-section">
         <form id="new-task-form">
-          <input type="text" id="new-task-title" />
+          <input type="text" id="new-task-title" placeholder="New Task" />
           <button type="submit">Add</button>
           <div id="difficulty-selector">
-            <input type="radio" id="easy" name="difficulty" checked>
+            <input type="radio" id="easy" name="difficulty" checked />
             <label for="easy">Easy</label>
-            <input type="radio" id="medium" name="difficulty">
+            <input type="radio" id="medium" name="difficulty" />
             <label for="medium">Medium</label>
-            <input type="radio" id="hard" name="difficulty">
+            <input type="radio" id="hard" name="difficulty" />
             <label for="hard">Hard</label>
           </div>
         </form>
         <ul id="unfinished-tasks-list"></ul>
         <div class="task-divider"></div>
         <ul id="finished-tasks-list"></ul>
-        <div class="resizer" id="resizer-tasks"></div>
-        <!-- Working on it-->
       </div>
-      <div left-container>
+      <div class="resizer" data-direction="horizontal"></div>
+      <div class="chunk" id="timer-section">
+        <h2>Timer</h2>
         <div id="clock">
           <span id="clock-time">00:00:00</span>
           <button id="start-stop-button">Start</button>
@@ -120,6 +109,18 @@
           <button type="button" id="set-break">Set</button>
         </div>
       </div>
+      <div class="resizer" data-direction="horizontal"></div>
+      <div class="chunk" id="videos-section">
+        <div id="video-player">
+          <video id="video"></video>
+          <div>
+            <button id="playButton">Play</button>
+            <button id="pauseButton">Pause</button>
+            <button id="stopButton">Stop</button>
+          </div>
+        </div>
+      </div>
     </div>
+    <script type="module" src="/dist/index.js"></script>
   </body>
 </html>
