@@ -48,21 +48,6 @@
         margin-bottom: 20px;
       }
 
-      form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      input[type="text"] {
-        padding: 10px;
-        width: 100%;
-        border-radius: 5px;
-        border: none;
-        font-size: 1rem;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
       ul, ol {
         background-color: #f0f0f0;
         padding: 10px;
@@ -114,14 +99,7 @@
         display: flex;
         flex-direction: column;
         gap: 15px;
-        color: white;
-        font-size: 1rem;
-      }
-
-      input[type="number"] {
-        padding: 10px;
-        border-radius: 5px;
-        border: none;
+        color: rgb(0, 0, 0);
         font-size: 1rem;
       }
     </style>
@@ -130,11 +108,11 @@
     <div class="container-fluid vh-100">
       <div class="row h-100">
         <div class="col-md-6 left d-flex flex-column align-items-center">
-          <form id="new-task-form">
-            <input type="text" id="new-task-title" placeholder="New task..." />
-            <button class="btn btn-primary" type="submit">Add Task</button>
-            <button class="btn btn-warning" id="reset-list">Reset List</button>
-        </form>
+          <form id="new-task-form" class="d-flex">
+            <input type="text" id="new-task-title" style="margin-right: 10px" class="form-control me-2" placeholder="New task..." />
+            <button class="btn btn-primary material-icons" type="submit">add</button>
+          </form>
+          <button class="btn btn-warning" id="reset-list">Reset List</button>
           <h2 for="unfinished-tasks-list" style="color: white">To Do:</h2>
           <ol id="unfinished-tasks-list">
           </ol>
@@ -148,13 +126,13 @@
             <span id="clock-time">00:00:00</span>
             <button class="btn btn-primary btn-lg" id="start-stop-button">Start</button>
           </div>
-          <div id="breaks">
-            <label for="work-length">Work Interval Length (minutes)</label>
-            <input type="number" id="work-length" placeholder="25" />
-            <label for="break-length">Break Interval Length (minutes)</label>
-            <input type="number" id="break-length" placeholder="5" />
+          <form class="border rounded p-4 shadow bg-light" id="breaks">
+            <label for="work-length" class="form-label m-0">Work Interval Length (minutes)</label>
+            <input type="number" id="work-length" class="form-control m-0" placeholder="25" />
+            <label for="break-length" class="form-label m-0">Break Interval Length (minutes)</label>
+            <input type="number" id="break-length" class="form-control m-0" placeholder="5" />
             <button class="btn btn-primary btn-sm" type="button" id="set-break">Set Intervals</button>
-          </div>
+        </form>
         </div>
       </div>
     </div>

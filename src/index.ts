@@ -58,9 +58,11 @@ reset?.addEventListener('click', () => {
 const clock = document.querySelector<HTMLSpanElement>('#clock-time')
 const newWorkTime: TimeInterval = returnWorkInterval();
 const newBreakTime: TimeInterval = { hours: 0, minutes: 1, seconds: 0 };
+const rightElement = document.querySelector('.right') as Element;
+let backgroundColor = getComputedStyle(rightElement).backgroundColor;
 const newTimer = new Timer(newWorkTime, newBreakTime, clock!, setColor);
 function setColor(color: string) {
-  document.body.style.backgroundColor = color
+  backgroundColor = color
 }
 setTimeLength()
 
