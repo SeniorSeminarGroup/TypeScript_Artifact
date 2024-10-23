@@ -5,8 +5,8 @@ export class Timer {
     intervalID: number | NodeJS.Timeout= -1;
     workTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
     breakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
-    workColor: string = '#42f57b';
-    breakColor:  string = 'lightblue';
+    workColor: string = '#FFB400';
+    breakColor:  string = '#2A9D8F';
     isWorkTime: boolean = true;
     paused: boolean = false;
     currentInterval: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
@@ -27,6 +27,7 @@ export class Timer {
   
     start() {
         // This there an error for you guys here?
+        // Yes, but it still works
       this.intervalID = setInterval(() => this.clockCountDown(), 1000);
       this.paused = true;
       this.clockCountDown();
@@ -59,6 +60,14 @@ export class Timer {
     getTime(): TimeInterval {
       return this.currentInterval
     }
+
+    getCurrentInterval(): TimeInterval {
+        if(this.isWorkTime) {
+            return this.workTime;
+        } else {
+            return this.breakTime;
+        }
+      }
   
     setWorkInterval(theInterval: TimeInterval) {
         this.workTime = theInterval;

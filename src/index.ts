@@ -25,6 +25,7 @@ const unfinishedList = document.querySelector<HTMLUListElement>("#unfinished-tas
 const finishedList = document.querySelector<HTMLUListElement>("#finished-tasks-list");
 const form = document.querySelector<HTMLFormElement>("#new-task-form");
 const input = document.querySelector<HTMLInputElement>("#new-task-title");
+const reset = document.querySelector<HTMLButtonElement>("#reset-list")
 const tasks: Task[] = loadTasks();
 renderTasks(tasks, unfinishedList, finishedList);
 
@@ -67,14 +68,24 @@ form?.addEventListener("submit", (e) => {
   input.value = "";
 });
 
+//Deletes all the tasks in the task list
+reset?.addEventListener('click', () => {
+  let length = tasks.length
+  for(let i=0; i<length; i++){
+    tasks.splice(0,1)
+  }
+  renderTasks(tasks, unfinishedList, finishedList);
+});
+
 // #####################    TIMER    #####################
 //new timer (created on page refresh)
 const clock = document.querySelector<HTMLSpanElement>('#clock-time')
 const newWorkTime: TimeInterval = returnWorkInterval();
 const newBreakTime: TimeInterval = { hours: 0, minutes: 1, seconds: 0 };
 const newTimer = new Timer(newWorkTime, newBreakTime, clock!, setColor);
+const leftContainerElement = document.querySelector<HTMLSpanElement>('.right');
 function setColor(color: string) {
-  document.body.style.backgroundColor = color
+  leftContainerElement!.style.backgroundColor = color
 }
 setTimeLength()
 
