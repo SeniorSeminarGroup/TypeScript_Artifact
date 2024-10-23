@@ -39,7 +39,7 @@ export class easyTask implements Task {
     title: string;
     completed: boolean;
     createdAt: Date;
-    color: string = "green"
+    color: string = "LawnGreen"
     
     constructor (id: string, title: string, completed: boolean, createdAt: Date){
         this.id=id

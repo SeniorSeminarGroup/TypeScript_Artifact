@@ -44,7 +44,7 @@ form?.addEventListener("submit", (e) => {
           const label = document.querySelector(`label[for="${difficultyOption.id}"]`);
           if (label) {
               taskDifficulty = label.innerHTML.trim();  // Assign the inner HTML of the label
-              console.log("got here")
+              console.log("got here: " + taskDifficulty)
           }
       }
   });

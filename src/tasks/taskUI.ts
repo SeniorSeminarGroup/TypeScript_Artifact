@@ -22,6 +22,7 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
         `;
  
     item.innerHTML = taskItemHTML;
+    item.style.backgroundColor = task.color;
 
     const upButton = item.querySelector("#up") as HTMLButtonElement;
     const downButton = item.querySelector("#down") as HTMLButtonElement;

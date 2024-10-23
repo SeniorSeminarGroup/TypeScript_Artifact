@@ -115,6 +115,14 @@
             <input type="text" id="new-task-title" style="margin-right: 10px" class="form-control me-2" placeholder="New task..." />
             <button class="btn btn-primary material-icons" type="submit">add</button>
           </form>
+          <div id="difficulty-selector">
+            <input type="radio" id="easy" name="difficulty" checked>
+            <label for="easy">Easy</label>
+            <input type="radio" id="medium" name="difficulty">
+            <label for="medium">Medium</label>
+            <input type="radio" id="hard" name="difficulty">
+            <label for="hard">Hard</label>
+          </div>
           <button class="btn btn-warning" id="reset-list">Reset List</button>
           <h2 for="unfinished-tasks-list" style="color: white">To Do:</h2>
           <ol id="unfinished-tasks-list">
