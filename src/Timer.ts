@@ -6,8 +6,8 @@ export class Timer {
     intervalID: number = -1;
     workTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
     breakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
-    workColor: string = '#42f57b';
-    breakColor:  string = 'lightblue';
+    workColor: string = '#FFB400';
+    breakColor:  string = '#2A9D8F';
     isWorkTime: boolean = true;
     paused: boolean = false;
     currentInterval: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
@@ -61,6 +61,14 @@ export class Timer {
     getTime(): TimeInterval {
       return this.currentInterval
     }
+
+    getCurrentInterval(): TimeInterval {
+        if(this.isWorkTime) {
+            return this.workTime;
+        } else {
+            return this.breakTime;
+        }
+      }
   
     setWorkInterval(theInterval: TimeInterval) {
         this.workTime = theInterval;
