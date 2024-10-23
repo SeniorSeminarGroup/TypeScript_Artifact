@@ -43,8 +43,8 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
 
     checkbox.addEventListener("change", () => {
         task.completed = checkbox.checked;
+        updateOrder()
         saveTasks(tasks);
-        renderTasks(tasks, unfinishedList, finishedList)
         renderTasks(tasks, unfinishedList, finishedList)
     });
     
@@ -67,7 +67,6 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
 
                 }else{
                 let theTask: Task = tasks.splice(i,1)[0]
-                console.log(theTask)
                 tasks.splice(i-1,0, theTask)
                 look = false
                 }
@@ -88,7 +87,6 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
 
                 }else{
                 let theTask: Task = tasks.splice(i,1)[0]
-               // console.log(theTask)
                 tasks.splice(i+1,0, theTask)
                 look = false
                 }
@@ -104,26 +102,34 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
     return true;
 }
 
-// Render all tasks in the list UI
-export function renderTasks(taskList: Task[], unfinishedList: HTMLUListElement | null, finishedList: HTMLUListElement | null): void {
-    tasks = taskList; // Update the global tasks array
-    //toDo = []
-    unfinishedList!.innerHTML = ""; // Clear existing unfinished tasks
-    finishedList!.innerHTML = ""; // Clear existing finished tasks
-
+function updateOrder(): void {
     let i = -1
+    //console.log(tasks)
     tasks.forEach(task => {
         i++
-        console.log(task)
         if (task.completed) {
             tasks.splice(tasks.length,0,task)
             tasks.splice(i,1)
+        } 
+    })
+}
+    
+
+
+// Render all tasks in the list UI
+export function renderTasks(taskList: Task[], unfinishedList: HTMLUListElement | null, finishedList: HTMLUListElement | null): void {
+    tasks = taskList; // Update the global tasks array
+    unfinishedList!.innerHTML = ""; // Clear existing unfinished tasks
+    finishedList!.innerHTML = ""; // Clear existing finished tasks
+    console.log(tasks)
+    tasks.forEach(task => {
+        if (task.completed) {
             addListItem(task, finishedList)
         } else {
-           // toDo[toDo.length] = task;
             addListItem(task, unfinishedList);
         }
     })
+    
     saveTasks(tasks);
 }
 
