@@ -102,6 +102,11 @@ startStop?.addEventListener("click", f => {
 
 })
 
+const resetButton = document.querySelector<HTMLButtonElement>("#reset-button")
+resetButton?.addEventListener("click", () => {
+  newTimer.reset()
+})
+
 // #####################    TIME SET    #####################
 const timeSet = document.querySelector<HTMLButtonElement>("#set-break")
 timeSet?.addEventListener('click', () => {

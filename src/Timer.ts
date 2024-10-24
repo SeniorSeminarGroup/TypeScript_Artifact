@@ -54,7 +54,8 @@ export class Timer {
     }
   
     reset() {
-      this.currentInterval = this.workTime
+      this.currentInterval = { ...this.workTime }
+      this.clock!.innerHTML = formatTime(this.currentInterval)
     }
   
     getTime(): TimeInterval {
