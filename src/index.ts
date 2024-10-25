@@ -104,6 +104,8 @@ startStop?.addEventListener("click", f => {
 
 const resetButton = document.querySelector<HTMLButtonElement>("#reset-button")
 resetButton?.addEventListener("click", () => {
+  newTimer.stop()
+  startStop!.innerHTML = "Start"
   newTimer.reset()
 })
 

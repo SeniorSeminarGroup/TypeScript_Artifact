@@ -55,7 +55,9 @@ export class Timer {
   
     reset() {
       this.currentInterval = { ...this.workTime }
+      this.isWorkTime = true
       this.clock!.innerHTML = formatTime(this.currentInterval)
+      this.colorChangeCallback(this.workColor)
     }
   
     getTime(): TimeInterval {
