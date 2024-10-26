@@ -1,5 +1,7 @@
 import { TimeInterval } from "./TimeInterval"
 import { formatTime } from "./TimeInterval"
+import { toSeconds } from "./TimeInterval"
+import { fromSeconds } from "./TimeInterval"
 
 export class Timer {
     intervalID: number | NodeJS.Timeout= -1;
@@ -11,18 +13,22 @@ export class Timer {
     paused: boolean = false;
     currentInterval: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
     clock: HTMLSpanElement | null = null;
+    clockGraphic: HTMLCanvasElement | null = null;
     body: HTMLElement = document.body;
     colorChangeCallback: (newColor: string) => void;
   
-    constructor(workTime: TimeInterval, breakTime: TimeInterval, clock: HTMLSpanElement, colorChangeCallback: (newColor: string) => void, workColor?: string, breakColor?: string) {
+    constructor(workTime: TimeInterval, breakTime: TimeInterval, clock: HTMLSpanElement, colorChangeCallback: (newColor: string) => void, clockGraphic?: HTMLCanvasElement, workColor?: string, breakColor?: string) {
         this.workTime = workTime;
         this.breakTime = breakTime;
         this.currentInterval = { ...workTime};
         this.clock = clock;
         this.workColor = workColor ? workColor : this.workColor;
         this.breakColor = breakColor ? breakColor : this.breakColor;
+        this.clockGraphic = clockGraphic ? clockGraphic : this.clockGraphic;
         this.body.style.backgroundColor = this.workColor;
         this.colorChangeCallback = colorChangeCallback
+
+        this.updateClockGraphic(this.getTime(), this.getCurrentInterval())
     }
   
     start() {
@@ -58,6 +64,8 @@ export class Timer {
       this.isWorkTime = true
       this.clock!.innerHTML = formatTime(this.currentInterval)
       this.colorChangeCallback(this.workColor)
+
+      this.updateClockGraphic(this.getTime(), this.getCurrentInterval())
     }
   
     getTime(): TimeInterval {
@@ -102,6 +110,37 @@ export class Timer {
             this.stop()
             // switch time interval type
             this.switchInterval()
+        }
+        this.updateClockGraphic(this.getTime(), this.getCurrentInterval())
+    }
+
+    updateClockGraphic(currentTime: TimeInterval, startTime: TimeInterval) {
+        const ctx = this.clockGraphic!.getContext('2d');
+
+        const currentTimeSeconds = toSeconds(currentTime)
+        const startTimeSeconds = toSeconds(startTime)
+    
+        const elapsedTime = currentTimeSeconds-startTimeSeconds;
+        const percentage = elapsedTime / startTimeSeconds;
+
+        if(ctx != null){ 
+            ctx.clearRect(0, 0, this.clockGraphic!.width, this.clockGraphic!.height);
+            ctx.beginPath();
+            ctx.arc(250, 250, 250, 0, 2 * Math.PI);
+            ctx.fillStyle = '#D3D3D3';
+            ctx.fill();
+            const endAngle = (percentage * 2 * Math.PI) - 0.5 * Math.PI;
+            ctx.beginPath();
+            ctx.moveTo(250, 250);
+            ctx.arc(250, 250, 250, -0.5 * Math.PI, endAngle);
+            ctx.fillStyle = '#007BFF';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(250, 250, 200, 0, 2 * Math.PI);
+            ctx.fillStyle = '#FFB400'; 
+            ctx.fill();
+
+            const remainingTime = Math.max(0, 0 - currentTimeSeconds);
         }
     }
   }
