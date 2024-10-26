@@ -11,7 +11,7 @@ export class hardTask implements Task {
     title: string;
     completed: boolean;
     createdAt: Date;
-    color: string = "red"
+    color: string = "#e12a2a"
     
     constructor (id: string, title: string, completed: boolean, createdAt: Date){
         this.id=id
@@ -25,7 +25,7 @@ export class mediumTask implements Task {
     title: string;
     completed: boolean;
     createdAt: Date;
-    color: string = "yellow"
+    color: string = "#fad02c"
     
     constructor (id: string, title: string, completed: boolean, createdAt: Date){
         this.id=id
@@ -39,7 +39,7 @@ export class easyTask implements Task {
     title: string;
     completed: boolean;
     createdAt: Date;
-    color: string = "LawnGreen"
+    color: string = "#469a49"
     
     constructor (id: string, title: string, completed: boolean, createdAt: Date){
         this.id=id
