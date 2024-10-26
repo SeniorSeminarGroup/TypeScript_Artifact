@@ -17,3 +17,15 @@ const secondsString: string = (time.seconds > 9)? String(time.seconds): '0'+time
 
 return hourString + ":" + minutesString + ":" + secondsString
 }
+
+export function toSeconds(time: TimeInterval): number {
+  return time.hours * 3600 + time.minutes * 60 + time.seconds;
+}
+
+export function fromSeconds(totalSeconds: number): TimeInterval {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return { hours, minutes, seconds };
+}
+

@@ -80,9 +80,10 @@ reset?.addEventListener('click', () => {
 // #####################    TIMER    #####################
 //new timer (created on page refresh)
 const clock = document.querySelector<HTMLSpanElement>('#clock-time')
+const canvas = document.querySelector<HTMLCanvasElement>('#timerCanvas')
 const newWorkTime: TimeInterval = returnWorkInterval();
 const newBreakTime: TimeInterval = { hours: 0, minutes: 1, seconds: 0 };
-const newTimer = new Timer(newWorkTime, newBreakTime, clock!, setColor);
+const newTimer = new Timer(newWorkTime, newBreakTime, clock!, setColor, canvas!);
 const leftContainerElement = document.querySelector<HTMLSpanElement>('.right');
 function setColor(color: string) {
   leftContainerElement!.style.backgroundColor = color
@@ -94,10 +95,10 @@ const startStop = document.querySelector<HTMLButtonElement>("#start-stop-button"
 startStop?.addEventListener("click", f => {
   if (newTimer.paused) {
     newTimer.stop()
-    startStop.innerHTML = "Start"
+    startStop.innerHTML = "play_circle"
   } else {
     newTimer.start()
-    startStop.innerHTML = "Pause"
+    startStop.innerHTML = "pause"
   }
 
 })
@@ -105,7 +106,7 @@ startStop?.addEventListener("click", f => {
 const resetButton = document.querySelector<HTMLButtonElement>("#reset-button")
 resetButton?.addEventListener("click", () => {
   newTimer.stop()
-  startStop!.innerHTML = "Start"
+  startStop!.innerHTML = "play_circle"
   newTimer.reset()
 })
 
