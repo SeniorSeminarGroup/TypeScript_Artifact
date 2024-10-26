@@ -7,8 +7,8 @@ export class Timer {
     intervalID: number | NodeJS.Timeout= -1;
     workTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
     breakTime: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };
-    workColor: string = '#FFB400';
-    breakColor:  string = '#2A9D8F';
+    workColor: string = '#fad02c';
+    breakColor:  string = '#469a49';
     isWorkTime: boolean = true;
     paused: boolean = false;
     currentInterval: TimeInterval = { hours: 0, minutes: 0, seconds: 0 };

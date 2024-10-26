@@ -18,7 +18,7 @@ export function addListItem(task: Task, list: HTMLUListElement | null): boolean 
         <button type="button" id="down" class="btn btn-secondary" style="margin-left: 3px; margin-right: 3px;">&#8595;</button>
         <input id="checkbox-completed" class="check-input" type="checkbox">
         <a id="title">${task.title}</a>
-        <button type="button" id="remove-button" style="float: right;" class="btn btn-danger material-icons">delete_forever</button>
+        <button type="button" id="remove-button" style="background-color: #e12a2a; float: right; border: 2px solid white;" class="btn btn-danger material-icons">delete_forever</button>
         `;
  
     item.innerHTML = taskItemHTML;
