@@ -11,7 +11,7 @@ export class hardTask implements Task {
     title: string;
     completed: boolean;
     createdAt: Date;
-    color: string = "#e12a2a"
+    color: string = "#E12A2A"
     
     constructor (id: string, title: string, completed: boolean, createdAt: Date){
         this.id=id
