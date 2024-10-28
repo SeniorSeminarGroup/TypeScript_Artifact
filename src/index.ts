@@ -118,7 +118,7 @@ timeSet?.addEventListener('click', () => {
 /**
  * Changes the workTimeLength and breakTimeLength variables to the values inputed by the user
  */
-function setTimeLength() {
+export function setTimeLength() {
   const break_time_minutes = Number(document.querySelector<HTMLInputElement>("#break-length")?.value)
 
   let break_hours: number = 0
