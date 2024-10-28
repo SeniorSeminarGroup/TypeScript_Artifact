@@ -8,6 +8,11 @@ describe('break time checker', () => {
     let breakTimeLength = {hours: Number(), minutes: Number(), seconds: Number()}
 
     beforeEach(() => {
+        
+        
+    });
+
+    it('should set a break time of 2 hours', () => {
         dom = new JSDOM(`
             <!DOCTYPE html>
             <html>
@@ -19,11 +24,9 @@ describe('break time checker', () => {
         `);
         document = dom.window.document;
         breakTimeLength = { hours: 0, minutes: 0, seconds: 0 };
-    });
-
-    it('should set a break time of 2 hours', () => {
-        const breakInput = global.document.querySelector<HTMLInputElement>("#break-length");
-        const workInput = global.document.querySelector<HTMLInputElement>("#work-length");
+        
+        const breakInput = document.querySelector<HTMLInputElement>("#break-length");
+        const workInput = document.querySelector<HTMLInputElement>("#work-length");
         breakInput!.value="120"
         workInput!.value="120"
         setTimeLength();
