@@ -114,15 +114,15 @@ function updateOrder(): void {
         } 
     })
 }
-    
-
 
 // Render all tasks in the list UI
-export function renderTasks(taskList: Task[], unfinishedList: HTMLUListElement | null, finishedList: HTMLUListElement | null): void {
+export function renderTasks(taskList: Task[], unfinishedList: HTMLUListElement | null, 
+    finishedList: HTMLUListElement | null): void {
+        
     tasks = taskList; // Update the global tasks array
     unfinishedList!.innerHTML = ""; // Clear existing unfinished tasks
     finishedList!.innerHTML = ""; // Clear existing finished tasks
-    console.log(tasks)
+//Add completed tasks to the finished task list and the unfinished tasks to the unfinished task list
     tasks.forEach(task => {
         if (task.completed) {
             addListItem(task, finishedList)
@@ -130,7 +130,6 @@ export function renderTasks(taskList: Task[], unfinishedList: HTMLUListElement |
             addListItem(task, unfinishedList);
         }
     })
-    
     saveTasks(tasks);
 }
 

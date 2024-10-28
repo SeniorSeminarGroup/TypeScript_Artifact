@@ -123,7 +123,14 @@ export class Timer {
         const elapsedTime = currentTimeSeconds-startTimeSeconds;
         const percentage = elapsedTime / startTimeSeconds;
 
-        if(ctx != null){ 
+        if(ctx != null){
+            let color = "gray" 
+            if(this.isWorkTime){
+                color=this.workColor
+            }
+            else{
+                color=this.breakColor
+            }
             ctx.clearRect(0, 0, this.clockGraphic!.width, this.clockGraphic!.height);
             ctx.beginPath();
             ctx.arc(250, 250, 250, 0, 2 * Math.PI);
@@ -137,7 +144,7 @@ export class Timer {
             ctx.fill();
             ctx.beginPath();
             ctx.arc(250, 250, 200, 0, 2 * Math.PI);
-            ctx.fillStyle = '#FFB400'; 
+            ctx.fillStyle = color; 
             ctx.fill();
 
             const remainingTime = Math.max(0, 0 - currentTimeSeconds);
